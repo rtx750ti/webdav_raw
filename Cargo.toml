@@ -1,14 +1,14 @@
 [package]
-name = "webdav_request"
+name = "webdav-core"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = []
+network-test = []
+not-net-test = []
+
 [dependencies]
-
-[workspace]
-members = ["lib_crates/*"]
-
-[workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1.0"
 quick-xml = { version = "0.38", features = ["serialize"] }

@@ -55,7 +55,7 @@ pub struct PropFindBuilder {
     client: Client,
 
     /// WebDAV 基础 URL。
-    base_url: Arc<Url>,
+    base_url: Url,
 
     /// 相对于 base_url 的资源路径。
     path: String,
@@ -69,7 +69,7 @@ pub struct PropFindBuilder {
 
 impl PropFindBuilder {
     /// 创建新的 PROPFIND Builder。
-    pub(crate) fn new(client: Client, base_url: Arc<Url>) -> Self {
+    pub fn new(client: Client, base_url: Url) -> Self {
         Self {
             client,
             base_url,
@@ -159,9 +159,6 @@ impl PropFindBuilder {
     }
 
     /// 构建 reqwest Request，但不发送请求。
-    ///
-    /// 注意这里必须使用 `&self`，不能使用 `self`。
-    /// 否则调用 `build()` 后，`send()` 中就无法继续使用 `self.client`。
     pub fn build(&self) -> Result<Request, PropFindError> {
         let url = self.request_url()?;
         let body = self.request_body()?;
@@ -201,8 +198,8 @@ mod test_propfind_builder {
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     // 辅助函数：创建基础 URL（已规范化为结尾带 /）
-    fn base_url() -> Arc<Url> {
-        Arc::new(Url::parse("https://example.com/webdav/").unwrap())
+    fn base_url() -> Url {
+        Url::parse("https://example.com/webdav/").unwrap()
     }
 
     // 辅助函数：创建默认客户端
@@ -344,7 +341,7 @@ mod test_propfind_builder {
     fn test_request_url_error_on_non_absolute_base() {
         eprintln!("测试非法 base_url 导致 Url::join 失败");
         // 构造一个无法作为 base 的 URL（如 data: URL）
-        let invalid_base = Arc::new(Url::parse("data:text/plain,hello").unwrap());
+        let invalid_base = Url::parse("data:text/plain,hello").unwrap();
         let client = client();
         let builder = PropFindBuilder::new(client, invalid_base).path("anything");
         let result = builder.request_url();
@@ -450,7 +447,7 @@ mod test_propfind_builder {
     #[test]
     fn test_build_error_on_invalid_url() {
         eprintln!("测试 build() 在 URL 错误时返回错误");
-        let invalid_base = Arc::new(Url::parse("data:text/plain,hello").unwrap());
+        let invalid_base = Url::parse("data:text/plain,hello").unwrap();
         let client = client();
         let builder = PropFindBuilder::new(client, invalid_base).path("x");
         let result = builder.build();
@@ -482,7 +479,7 @@ mod test_propfind_builder {
             .await;
 
         // 使用 mock 服务器地址构建 base_url
-        let base_url = Arc::new(Url::parse(&format!("{}/webdav/", mock_server.uri())).unwrap());
+        let base_url = Url::parse(&format!("{}/webdav/", mock_server.uri())).unwrap();
         let client = Client::new();
         let builder = PropFindBuilder::new(client, base_url)
             .path("Documents")
@@ -516,7 +513,7 @@ mod test_propfind_builder {
             .mount(&mock_server)
             .await;
 
-        let base_url = Arc::new(Url::parse(&format!("{}/webdav/", mock_server.uri())).unwrap());
+        let base_url = Url::parse(&format!("{}/webdav/", mock_server.uri())).unwrap();
         let client = Client::new();
         let builder = PropFindBuilder::new(client, base_url);
 
@@ -535,7 +532,7 @@ mod test_propfind_builder {
         assert_eq!(url.as_str(), "https://example.com/webdav/alias/path");
     }
 
-     // ========== 测试真实webdav请求 ==========
+    // ========== 测试真实webdav请求 ==========
     #[test]
     #[cfg(feature = "network-test")]
     fn test_fetch_real_webdav() {

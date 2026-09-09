@@ -1002,25 +1002,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "raw_webdav"
-version = "0.1.0"
-dependencies = [
- "base64",
- "chrono",
- "mime",
- "percent-encoding",
- "quick-xml",
- "reqwest",
- "serde",
- "serde_json",
- "sha2",
- "thiserror",
- "tokio",
- "url",
- "wiremock",
-]
-
-[[package]]
 name = "regex"
 version = "1.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1659,8 +1640,23 @@ dependencies = [
 ]
 
 [[package]]
-name = "webdav_request"
+name = "webdav-core"
 version = "0.1.0"
+dependencies = [
+ "base64",
+ "chrono",
+ "mime",
+ "percent-encoding",
+ "quick-xml",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror",
+ "tokio",
+ "url",
+ "wiremock",
+]
 
 [[package]]
 name = "webpki-roots"
