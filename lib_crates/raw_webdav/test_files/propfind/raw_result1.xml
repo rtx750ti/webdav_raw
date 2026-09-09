@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<D:multistatus xmlns:D="DAV:">
+    <D:response xmlns:lp1="DAV:" xmlns:lp2="http://apache.org/dav/props/">
+        <D:href>/dav/</D:href>
+        <D:propstat>
+            <D:prop>
+                <lp1:resourcetype>
+                    <D:collection/>
+                </lp1:resourcetype>
+                <lp1:creationdate>2025-08-16T10:46:36Z</lp1:creationdate>
+                <lp1:getlastmodified>Sat, 16 Aug 2025 10:46:36 GMT</lp1:getlastmodified>
+                <lp1:getetag>"6-63c7938777410"</lp1:getetag>
+                <D:supportedlock>
+                    <D:lockentry>
+                        <D:lockscope>
+                            <D:exclusive/>
+                        </D:lockscope>
+                        <D:locktype>
+                            <D:write/>
+                        </D:locktype>
+                    </D:lockentry>
+                    <D:lockentry>
+                        <D:lockscope>
+                            <D:shared/>
+                        </D:lockscope>
+                        <D:locktype>
+                            <D:write/>
+                        </D:locktype>
+                    </D:lockentry>
+                </D:supportedlock>
+                <D:lockdiscovery/>
+                <D:getcontenttype>httpd/unix-directory</D:getcontenttype>
+            </D:prop>
+            <D:status>HTTP/1.1 200 OK</D:status>
+        </D:propstat>
+    </D:response>
+    <D:response xmlns:lp1="DAV:" xmlns:lp2="http://apache.org/dav/props/">
+        <D:href>/dav/flypy_pro/</D:href>
+        <D:propstat>
+            <D:prop>
+                <lp1:resourcetype>
+                    <D:collection/>
+                </lp1:resourcetype>
+                <lp1:creationdate>2023-04-04T13:13:01Z</lp1:creationdate>
+                <lp1:getlastmodified>Tue, 04 Apr 2023 13:13:01 GMT</lp1:getlastmodified>
+                <lp1:getetag>"4-5f8826f644b50"</lp1:getetag>
+                <D:supportedlock>
+                    <D:lockentry>
+                        <D:lockscope>
+                            <D:exclusive/>
+                        </D:lockscope>
+                        <D:locktype>
+                            <D:write/>
+                        </D:locktype>
+                    </D:lockentry>
+                    <D:lockentry>
+                        <D:lockscope>
+                            <D:shared/>
+                        </D:lockscope>
+                        <D:locktype>
+                            <D:write/>
+                        </D:locktype>
+                    </D:lockentry>
+                </D:supportedlock>
+                <D:lockdiscovery/>
+                <D:getcontenttype>httpd/unix-directory</D:getcontenttype>
+            </D:prop>
+            <D:status>HTTP/1.1 200 OK</D:status>
+        </D:propstat>
+    </D:response>
+    <D:response xmlns:lp1="DAV:" xmlns:lp2="http://apache.org/dav/props/">
+        <D:href>/dav/test.txt</D:href>
+        <D:propstat>
+            <D:prop>
+                <lp1:resourcetype/>
+                <lp1:creationdate>2025-08-16T10:46:36Z</lp1:creationdate>
+                <lp1:getcontentlength>12</lp1:getcontentlength>
+                <lp1:getlastmodified>Sat, 16 Aug 2025 10:46:36 GMT</lp1:getlastmodified>
+                <lp1:getetag>"c-63c79387773b2"</lp1:getetag>
+                <lp2:executable>F</lp2:executable>
+                <D:supportedlock>
+                    <D:lockentry>
+                        <D:lockscope>
+                            <D:exclusive/>
+                        </D:lockscope>
+                        <D:locktype>
+                            <D:write/>
+                        </D:locktype>
+                    </D:lockentry>
+                    <D:lockentry>
+                        <D:lockscope>
+                            <D:shared/>
+                        </D:lockscope>
+                        <D:locktype>
+                            <D:write/>
+                        </D:locktype>
+                    </D:lockentry>
+                </D:supportedlock>
+                <D:lockdiscovery/>
+                <D:getcontenttype>text/plain</D:getcontenttype>
+            </D:prop>
+            <D:status>HTTP/1.1 200 OK</D:status>
+        </D:propstat>
+    </D:response>
+    <D:response xmlns:lp1="DAV:" xmlns:lp2="http://apache.org/dav/props/">
+        <D:href>/dav/%e6%b5%8b%e8%af%95%e6%96%87%e4%bb%b6%e5%a4%b9/</D:href>
+        <D:propstat>
+            <D:prop>
+                <lp1:resourcetype>
+                    <D:collection/>
+                </lp1:resourcetype>
+                <lp1:creationdate>2025-10-25T14:31:27Z</lp1:creationdate>
+                <lp1:getlastmodified>Sat, 25 Oct 2025 14:31:27 GMT</lp1:getlastmodified>
+                <lp1:getetag>"c-641fc85778799"</lp1:getetag>
+                <D:supportedlock>
+                    <D:lockentry>
+                        <D:lockscope>
+                            <D:exclusive/>
+                        </D:lockscope>
+                        <D:locktype>
+                            <D:write/>
+                        </D:locktype>
+                    </D:lockentry>
+                    <D:lockentry>
+                        <D:lockscope>
+                            <D:shared/>
+                        </D:lockscope>
+                        <D:locktype>
+                            <D:write/>
+                        </D:locktype>
+                    </D:lockentry>
+                </D:supportedlock>
+                <D:lockdiscovery/>
+                <D:getcontenttype>httpd/unix-directory</D:getcontenttype>
+            </D:prop>
+            <D:status>HTTP/1.1 200 OK</D:status>
+        </D:propstat>
+    </D:response>
+    <D:response xmlns:lp1="DAV:" xmlns:lp2="http://apache.org/dav/props/">
+        <D:href>/dav/MyDocument/</D:href>
+        <D:propstat>
+            <D:prop>
+                <lp1:resourcetype>
+                    <D:collection/>
+                </lp1:resourcetype>
+                <lp1:creationdate>2024-04-01T14:36:02Z</lp1:creationdate>
+                <lp1:getlastmodified>Mon, 01 Apr 2024 14:36:02 GMT</lp1:getlastmodified>
+                <lp1:getetag>"4-61509e8ab1a8e"</lp1:getetag>
+                <D:supportedlock>
+                    <D:lockentry>
+                        <D:lockscope>
+                            <D:exclusive/>
+                        </D:lockscope>
+                        <D:locktype>
+                            <D:write/>
+                        </D:locktype>
+                    </D:lockentry>
+                    <D:lockentry>
+                        <D:lockscope>
+                            <D:shared/>
+                        </D:lockscope>
+                        <D:locktype>
+                            <D:write/>
+                        </D:locktype>
+                    </D:lockentry>
+                </D:supportedlock>
+                <D:lockdiscovery/>
+                <D:getcontenttype>httpd/unix-directory</D:getcontenttype>
+            </D:prop>
+            <D:status>HTTP/1.1 200 OK</D:status>
+        </D:propstat>
+    </D:response>
+</D:multistatus>
