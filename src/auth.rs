@@ -1,4 +1,4 @@
-use std::{fmt, sync::Arc};
+use std::{fmt, str::FromStr, sync::Arc};
 
 use base64::Engine;
 use reqwest::{
@@ -8,7 +8,7 @@ use reqwest::{
 use sha2::{Digest, Sha256};
 use url::Url;
 
-use crate::propfind::builder::PropFindBuilder;
+use crate::{get::builder::GetBuilder, propfind::builder::PropFindBuilder};
 
 /// WebDAV 认证相关错误
 #[derive(Debug, thiserror::Error)]
@@ -243,6 +243,10 @@ fn sha256_hex(value: &str) -> String {
 impl WebdavAuth {
     pub fn propfind(&self) -> PropFindBuilder {
         PropFindBuilder::new(self.client.clone(), self.base_url.clone())
+    }
+
+    pub fn get(&self) -> GetBuilder {
+        GetBuilder::new(self.client.clone(), self.base_url.clone())
     }
 }
 

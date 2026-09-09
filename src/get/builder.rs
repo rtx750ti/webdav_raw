@@ -1,3 +1,5 @@
+use std::str::FromStr as _;
+
 use reqwest::{Client, Request, Response};
 use thiserror::Error;
 use url::Url;
@@ -11,19 +13,34 @@ pub enum GetError {
 
 pub struct GetBuilder {
     client: Client,
+    base_url: Url,
     absolute_url: Url,
 }
 
 impl GetBuilder {
-    pub fn new(client: Client, absolute_url: &Url) -> Self {
+    pub fn new(client: Client, base_url: Url) -> Self {
+        let url = Url::from_str("https://www.example.com/dav/").expect("默认路径格式化失败");
         Self {
             client,
-            absolute_url: absolute_url.clone(),
+            base_url,
+            absolute_url: url,
         }
     }
 
-    pub fn absolute_url(mut self, absolute_url: Url) -> Self {
-        self.absolute_url = absolute_url;
+    /// 用相对路径来设置当前请求地址
+    pub fn relative_url(mut self, relative_path: String) -> Self {
+        let joined = self
+            .base_url
+            .join(relative_path.as_ref())
+            .expect("无效的相对路径，请确保路径格式正确");
+        self.absolute_url = joined;
+        self
+    }
+
+    /// 用绝对路径来设置当前请求地址
+    pub fn absolute_url(mut self, absolute_url: String) -> Self {
+        let parsed = Url::parse(absolute_url.as_ref()).expect("无效的绝对 URL");
+        self.absolute_url = parsed;
         self
     }
 
@@ -59,48 +76,66 @@ mod tests {
         Client::new()
     }
 
-    /// 基于标准 WebDAV base URL 构造绝对 URL。
-    fn webdav_url(relative_path: &str) -> Url {
-        let base = "https://www.jianguoyun.com/dav/";
-        let path = relative_path.trim_start_matches('/');
-        Url::parse(&format!("{}{}", base, path)).unwrap()
+    /// 创建测试用的 base URL（始终以 '/' 结尾）
+    fn test_base_url() -> Url {
+        Url::parse("https://www.jianguoyun.com/dav/").unwrap()
     }
 
-    /// 测试 build 使用绝对 URL。
+    // ========== 测试相对路径拼接 ==========
     #[test]
-    fn test_build_uses_absolute_url() {
+    fn test_relative_url() {
         let client = test_client();
-        let url = webdav_url("Documents/report.pdf");
-        let builder = GetBuilder::new(client, &url);
+        let base = test_base_url();
+        let builder =
+            GetBuilder::new(client, base).relative_url("Documents/report.pdf".to_string());
 
         let request = builder.build().unwrap();
-
-        eprintln!("url: {}", url);
-        eprintln!("method: {}", request.method());
-        eprintln!("request_url: {}", request.url());
-
+        let expected_url = "https://www.jianguoyun.com/dav/Documents/report.pdf";
+        eprintln!("请求 URL: {}", request.url());
         assert_eq!(request.method(), "GET");
-        assert_eq!(request.url().as_str(), url.as_str());
+        assert_eq!(request.url().as_str(), expected_url);
     }
 
-    /// 测试 absolute_url 修改 URL。
+    // ========== 测试绝对 URL 覆盖 ==========
     #[test]
-    fn test_absolute_url_changes_url() {
+    fn test_absolute_url() {
         let client = test_client();
-        let url1 = webdav_url("first.txt");
-        let url2 = webdav_url("second.txt");
-        let builder = GetBuilder::new(client, &url1).absolute_url(url2.clone());
+        let base = test_base_url();
+        let absolute = "https://example.com/other/file.txt";
+        let builder = GetBuilder::new(client, base).absolute_url(absolute.to_string());
 
         let request = builder.build().unwrap();
-
-        eprintln!("url1: {}", url1);
-        eprintln!("url2: {}", url2);
-        eprintln!("request_url: {}", request.url());
-
-        assert_eq!(request.url().as_str(), url2.as_str());
+        eprintln!("请求 URL: {}", request.url());
+        assert_eq!(request.url().as_str(), absolute);
     }
 
-    /// 测试 send 返回响应。
+    // ========== 测试后续调用覆盖之前的设置 ==========
+    #[test]
+    fn test_later_call_overwrites() {
+        let client = test_client();
+        let base = test_base_url();
+        let builder = GetBuilder::new(client, base)
+            .relative_url("first.txt".to_string())
+            .absolute_url("https://example.com/second.txt".to_string());
+
+        let request = builder.build().unwrap();
+        assert_eq!(request.url().as_str(), "https://example.com/second.txt");
+    }
+
+    // ========== 测试 build 使用当前 absolute_url ==========
+    #[test]
+    fn test_build_uses_current_absolute_url() {
+        let client = test_client();
+        let base = test_base_url();
+        let builder = GetBuilder::new(client, base).relative_url("final/path".to_string());
+        let request = builder.build().unwrap();
+        assert_eq!(
+            request.url().as_str(),
+            "https://www.jianguoyun.com/dav/final/path"
+        );
+    }
+
+    // ========== 测试 send 返回响应（mock） ==========
     #[tokio::test]
     async fn test_send_returns_response() {
         let server = MockServer::start().await;
@@ -112,34 +147,41 @@ mod tests {
             .await;
 
         let client = Client::new();
-        let url = Url::parse(&format!("{}/dav/resource", server.uri())).unwrap();
-        let builder = GetBuilder::new(client, &url);
+        let base_url = Url::parse(&format!("{}/dav/", server.uri())).unwrap();
+        let builder = GetBuilder::new(client, base_url).relative_url("resource".to_string());
 
         let response = builder.send().await.unwrap();
-
-        let res_status = response.status();
-
-        eprintln!("status: {}", res_status);
+        let status = response.status();
         let body = response.text().await.unwrap();
-        eprintln!("body: {}", body);
 
-        assert_eq!(res_status, 200);
+        eprintln!("状态码: {}", status);
+        eprintln!("响应体: {}", body);
+
+        assert_eq!(status, 200);
         assert_eq!(body, expected_body);
     }
 
-    /// 测试构建带非标准端口的 URL。
+    // ========== 测试构建带非标准端口的 URL（通过 relative_url 拼接） ==========
     #[test]
-    fn test_build_with_non_standard_port() {
+    fn test_relative_url_with_non_standard_port() {
         let client = test_client();
-        let url = Url::parse("https://www.jianguoyun.com:8443/dav/test1/file.txt").unwrap();
-        let builder = GetBuilder::new(client, &url);
+        let base = Url::parse("https://www.jianguoyun.com:8443/dav/").unwrap();
+        let builder = GetBuilder::new(client, base).relative_url("test1/file.txt".to_string());
 
         let request = builder.build().unwrap();
+        let expected = "https://www.jianguoyun.com:8443/dav/test1/file.txt";
+        assert_eq!(request.url().as_str(), expected);
+    }
 
-        eprintln!("url: {}", url);
-        eprintln!("request_url: {}", request.url());
-
-        assert_eq!(request.url().as_str(), url.as_str());
+    // ========== 测试绝对 URL 包含端口 ==========
+    #[test]
+    fn test_absolute_url_with_port() {
+        let client = test_client();
+        let base = test_base_url();
+        let abs = "https://example.com:8080/other/file";
+        let builder = GetBuilder::new(client, base).absolute_url(abs.to_string());
+        let request = builder.build().unwrap();
+        assert_eq!(request.url().as_str(), abs);
     }
 }
 
@@ -191,20 +233,11 @@ mod network_tests {
         (client, base_url)
     }
 
-    /// 构造绝对 URL
-    fn absolute_url(base_url: &Url, relative_path: &str) -> Url {
-        let clean = relative_path.trim_start_matches('/');
-        base_url.join(clean).unwrap()
-    }
-
     // ========== 测试：下载存在的文件（验证状态码和 Content-Length） ==========
     #[tokio::test]
     async fn test_download_existing_file() {
         let (client, base_url) = setup_webdav(None, 60);
-        let url = absolute_url(&base_url, EXISTING_FILE);
-        eprintln!("下载 URL: {}", url);
-
-        let builder = GetBuilder::new(client, &url);
+        let builder = GetBuilder::new(client, base_url).relative_url(EXISTING_FILE.to_string());
         let response = builder.send().await.expect("GET request failed");
         let status = response.status();
         let content_length = response
@@ -230,10 +263,7 @@ mod network_tests {
     #[tokio::test]
     async fn test_download_nonexistent_file() {
         let (client, base_url) = setup_webdav(None, 10);
-        let url = absolute_url(&base_url, NONEXISTENT_FILE);
-        eprintln!("不存在的 URL: {}", url);
-
-        let builder = GetBuilder::new(client, &url);
+        let builder = GetBuilder::new(client, base_url).relative_url(NONEXISTENT_FILE.to_string());
         let result = builder.send().await;
 
         match result {
@@ -253,10 +283,7 @@ mod network_tests {
     #[tokio::test]
     async fn test_download_with_wrong_credentials() {
         let (client, base_url) = setup_webdav(Some("wrong_password"), 10);
-        // 复用真实存在文件的路径，以便正确触发认证失败（如果文件存在但密码错误）
-        let url = absolute_url(&base_url, EXISTING_FILE);
-
-        let builder = GetBuilder::new(client, &url);
+        let builder = GetBuilder::new(client, base_url).relative_url(EXISTING_FILE.to_string());
         let result = builder.send().await;
 
         match result {
@@ -271,4 +298,7 @@ mod network_tests {
         }
         eprintln!("错误密码测试通过 ✓");
     }
+
+    // ========== 额外测试：使用绝对 URL 下载真实文件（可选） ==========
+    // 如果用户需要测试绝对 URL 覆盖，可启用，但这里不强制。
 }
