@@ -13,8 +13,7 @@ pub struct MultiStatus {
 
 impl MultiStatus {
     pub fn from_str(raw_xml: &str) -> Result<Self, DeError> {
-        let mut multistatus: MultiStatus = quick_xml::de::from_str(&raw_xml)?;
-        multistatus.response.pop_front(); // 丢掉第一个，因为第一个就是该路径本身
+        let multistatus: MultiStatus = quick_xml::de::from_str(&raw_xml)?;
         Ok(multistatus)
     }
 

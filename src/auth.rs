@@ -50,6 +50,12 @@ pub enum WebdavAuthError {
 #[derive(Clone)]
 pub struct WebdavAuth {
     client: Client,
+    /// WebDAV 服务的根 URL。
+    ///
+    /// 此处使用普通的 `Url` 而非 `Arc<Url>`，因为：
+    /// - 每次构建请求时克隆 `Url` 的开销极小，远小于网络 I/O 的延迟和带宽消耗。
+    /// - 即使在高并发场景（如 100 个文件 × 100 个分片 = 10,000 个请求），总克隆开销仍可忽略。
+    /// - 保持结构体简单，避免过早优化。
     base_url: Url,
 
     /// Basic token 的摘要，用于比较认证信息是否发生变化。
