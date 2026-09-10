@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "kebab-case")]
 pub struct ResourceType {
     /// `<collection/>` 存在表示是目录，否则是文件
-    #[serde(rename = "collection")]
+    #[serde(rename = "collection", skip_serializing_if = "Option::is_none")]
     pub is_collection: Option<EmptyElement>,
 }
 

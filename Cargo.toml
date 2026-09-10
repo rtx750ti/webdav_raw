@@ -36,7 +36,19 @@ tokio = { version = "1", features = [
 sha2 = { version = "0.10.9" }
 url = "2.5.4"
 thiserror = "2.0.16"
-wiremock = "0.6.5"
 
 [dev-dependencies]
 futures-util = "0.3"
+wiremock = "0.6.5"
+
+[[test]]
+name = "auth"
+path = "tests/auth/mod.rs"
+
+[[test]]
+name = "get"
+path = "tests/get/mod.rs"
+
+[[test]]
+name = "propfind"
+path = "tests/propfind/mod.rs"

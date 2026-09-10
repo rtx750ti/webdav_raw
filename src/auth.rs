@@ -1,4 +1,4 @@
-use std::{fmt, str::FromStr, sync::Arc};
+use std::{fmt, sync::Arc};
 
 use base64::Engine;
 use reqwest::{
@@ -99,13 +99,6 @@ impl WebdavAuth {
     pub fn eq_only_token(&self, other: &Self) -> bool {
         self.token_fingerprint == other.token_fingerprint
     }
-
-    /// 获取 token 指纹。
-    ///
-    /// 一般业务代码不需要调用该方法，主要用于缓存键、调试或测试。
-    pub(crate) fn token_fingerprint(&self) -> &str {
-        self.token_fingerprint.as_str()
-    }
 }
 
 /// 比较完整的 WebDAV 认证信息
@@ -139,6 +132,15 @@ impl BaseUrl {
     fn parse(raw_url: &str) -> Result<Self, WebdavAuthError> {
         if raw_url.trim().is_empty() {
             return Err(WebdavAuthError::EmptyBaseUrl);
+        }
+
+        // `url` 会把 `http:/webdav` 规范化为带主机的地址；WebDAV 根地址
+        // 必须显式包含 authority，避免调用方遗漏主机分隔符后访问错误服务。
+        if matches!(raw_url.split_once(':'), Some(("http" | "https", _)))
+            && !raw_url.starts_with("http://")
+            && !raw_url.starts_with("https://")
+        {
+            return Err(WebdavAuthError::MissingHost);
         }
 
         let mut url = Url::parse(raw_url).map_err(WebdavAuthError::InvalidBaseUrl)?;
@@ -253,131 +255,5 @@ impl WebdavAuth {
 
     pub fn get(&self) -> GetBuilder {
         GetBuilder::new(self.client.clone(), self.base_url.clone())
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_parse_base_url_and_append_trailing_slash() {
-        let base_url = BaseUrl::parse("https://example.com/webdav").unwrap();
-
-        assert_eq!(base_url.0.as_str(), "https://example.com/webdav/");
-    }
-
-    #[test]
-    fn test_base_url_root_path() {
-        let base_url = BaseUrl::parse("https://example.com").unwrap();
-
-        assert_eq!(base_url.0.as_str(), "https://example.com/");
-    }
-
-    #[test]
-    fn test_base_url_keeps_existing_trailing_slash() {
-        let base_url = BaseUrl::parse("https://example.com/webdav/").unwrap();
-
-        assert_eq!(base_url.0.as_str(), "https://example.com/webdav/");
-    }
-
-    #[test]
-    fn test_reject_empty_base_url() {
-        let result = BaseUrl::parse("");
-
-        assert!(matches!(result, Err(WebdavAuthError::EmptyBaseUrl)));
-    }
-
-    #[test]
-    fn test_reject_invalid_base_url() {
-        let result = BaseUrl::parse("not a url");
-
-        assert!(matches!(result, Err(WebdavAuthError::InvalidBaseUrl(_))));
-    }
-
-    #[test]
-    fn test_reject_unsupported_scheme() {
-        let result = BaseUrl::parse("ftp://example.com/webdav");
-
-        assert!(matches!(result, Err(WebdavAuthError::UnsupportedScheme(_))));
-    }
-
-    #[test]
-    fn test_reject_base_url_with_query() {
-        let result = BaseUrl::parse("https://example.com/webdav?token=secret");
-
-        assert!(matches!(result, Err(WebdavAuthError::BaseUrlContainsQuery)));
-    }
-
-    #[test]
-    fn test_reject_base_url_with_fragment() {
-        let result = BaseUrl::parse("https://example.com/webdav#fragment");
-
-        assert!(matches!(
-            result,
-            Err(WebdavAuthError::BaseUrlContainsFragment)
-        ));
-    }
-
-    #[test]
-    fn test_basic_auth_header() {
-        let auth = BasicAuth::new("alice", "password").unwrap();
-
-        assert_eq!(
-            auth.authorization().to_str().unwrap(),
-            "Basic YWxpY2U6cGFzc3dvcmQ="
-        );
-    }
-
-    #[test]
-    fn test_same_credentials_have_same_fingerprint() {
-        let auth1 = BasicAuth::new("alice", "password").unwrap();
-        let auth2 = BasicAuth::new("alice", "password").unwrap();
-
-        assert_eq!(auth1.fingerprint(), auth2.fingerprint());
-    }
-
-    #[test]
-    fn test_different_credentials_have_different_fingerprint() {
-        let auth1 = BasicAuth::new("alice", "password1").unwrap();
-        let auth2 = BasicAuth::new("alice", "password2").unwrap();
-
-        assert_ne!(auth1.fingerprint(), auth2.fingerprint());
-    }
-
-    #[test]
-    fn test_webdav_auth_eq() {
-        let auth1 = WebdavAuth::new("alice", "password", "https://example.com/webdav").unwrap();
-
-        let auth2 = WebdavAuth::new("alice", "password", "https://example.com/webdav/").unwrap();
-
-        assert_eq!(auth1, auth2);
-    }
-
-    #[test]
-    fn test_webdav_auth_eq_includes_base_url() {
-        let auth1 = WebdavAuth::new("alice", "password", "https://example.com/webdav").unwrap();
-
-        let auth2 = WebdavAuth::new("alice", "password", "https://example.com/other").unwrap();
-
-        assert_ne!(auth1, auth2);
-        assert!(auth1.eq_only_token(&auth2));
-    }
-
-    #[test]
-    fn test_debug_does_not_contain_password_or_authorization() {
-        let auth = WebdavAuth::new(
-            "alice",
-            "super-secret-password",
-            "https://example.com/webdav",
-        )
-        .unwrap();
-
-        let debug_text = format!("{auth:?}");
-
-        assert!(!debug_text.contains("alice"));
-        assert!(!debug_text.contains("super-secret-password"));
-        assert!(!debug_text.contains("Basic"));
-        assert!(!debug_text.contains("YWxpY2U"));
     }
 }

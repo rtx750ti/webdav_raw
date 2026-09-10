@@ -2,7 +2,6 @@ use base64::engine::Engine;
 use base64::engine::general_purpose::STANDARD;
 
 use reqwest::header::AUTHORIZATION;
-use std::sync::Arc;
 use url::Url;
 use wiremock::http::{HeaderMap, HeaderValue}; // 需要在 Cargo.toml 中添加 base64 = "0.21" // 引入 trait 才能使用 encode
 
