@@ -3,7 +3,7 @@
 use webdav_core::{PutBuilder, PutError};
 use webdav_core::{Client, HeaderMap, HeaderValue, Request, Url};
 
-use crate::support::{bytes_body, bytes_body_with_content_type};
+use crate::support::fixtures::{bytes_body, bytes_body_with_content_type};
 
 /// 构造指向固定根地址的 Builder。
 fn builder() -> PutBuilder {

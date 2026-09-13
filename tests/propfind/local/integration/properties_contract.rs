@@ -1,11 +1,10 @@
-#[path = "../../../common/local_http.rs"]
-mod local_http;
-
 use webdav_core::Client;
 use webdav_core::PropFindBuilder;
 use webdav_core::FindProp;
 use wiremock::matchers::{body_string, method, path};
 use wiremock::{Mock, ResponseTemplate};
+
+use crate::common::local_http;
 
 /// 验证指定属性会去重并以稳定顺序发送到服务器。
 #[tokio::test]

@@ -1,10 +1,9 @@
-#[path = "../../../common/local_http.rs"]
-mod local_http;
-
 use webdav_core::Client;
 use webdav_core::{Depth, PropFindBuilder};
 use wiremock::matchers::{body_string, header, method, path};
 use wiremock::{Mock, ResponseTemplate};
+
+use crate::common::local_http;
 
 /// 验证 allprop 请求的路径、Depth、请求头和 XML 请求体。
 #[tokio::test]

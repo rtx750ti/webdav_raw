@@ -1,9 +1,8 @@
-#[path = "../../../common/local_http.rs"]
-mod local_http;
-
-use webdav_core::auth::WebdavAuth;
+use webdav_core::WebdavAuth;
 use wiremock::matchers::{header, method, path};
 use wiremock::{Mock, ResponseTemplate};
+
+use crate::common::local_http;
 
 /// 验证认证对象发出的 GET 请求携带默认 Basic Authorization 请求头。
 #[tokio::test]

@@ -1,6 +1,6 @@
 use webdav_core::GetBuilder;
 
-use crate::support::{base_url, client};
+use crate::support::fixtures::{base_url, client};
 
 /// 验证未设置路径时，GET Builder 使用传入的认证根地址。
 #[test]

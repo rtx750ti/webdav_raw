@@ -1,9 +1,8 @@
-#[path = "../../../common/local_http.rs"]
-mod local_http;
-
 use webdav_core::WebdavAuth;
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
+
+use crate::common::local_http;
 
 /// 验证默认 GET 请求使用认证根地址和 GET 方法。
 #[tokio::test]

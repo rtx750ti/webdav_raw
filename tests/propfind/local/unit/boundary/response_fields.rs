@@ -1,6 +1,6 @@
 use webdav_core::MultiStatus;
 
-use crate::fixtures::{RAW_RESULT_1, RAW_RESULT_2, parse_fixture};
+use crate::support::fixtures::{RAW_RESULT_1, RAW_RESULT_2, parse_fixture};
 
 /// 验证两份固件保留完整响应列表和主要 WebDAV 字段。
 #[test]

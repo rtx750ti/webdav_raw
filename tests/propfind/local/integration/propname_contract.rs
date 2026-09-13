@@ -1,10 +1,9 @@
-#[path = "../../../common/local_http.rs"]
-mod local_http;
-
 use webdav_core::Client;
 use webdav_core::{Depth, PropFindBuilder};
 use wiremock::matchers::{body_string, header, method, path};
 use wiremock::{Mock, ResponseTemplate};
+
+use crate::common::local_http;
 
 /// 验证 propname 请求携带正确的选择器 XML。
 #[tokio::test]

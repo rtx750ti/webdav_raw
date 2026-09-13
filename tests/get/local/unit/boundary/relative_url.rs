@@ -1,6 +1,6 @@
 use webdav_core::GetBuilder;
 
-use crate::support::{base_url, client};
+use crate::support::fixtures::{base_url, client};
 
 /// 验证相对路径保留根路径并对空格和中文进行 URL 编码。
 #[test]

@@ -10,7 +10,7 @@ use webdav_core::U8BytesData;
 use webdav_core::{PutBody, FileHandle};
 use webdav_core::{Client, Request, Url};
 
-use crate::support::{
+use crate::support::fixtures::{
     bytes_body, bytes_body_with_content_type, metadata, remove_temp_file, write_temp_file,
 };
 

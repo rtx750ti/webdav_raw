@@ -1,7 +1,6 @@
-#[path = "../../common/network_config.rs"]
-mod network_config;
-
 use webdav_core::WebdavAuth;
+
+use crate::common::network_config;
 
 /// 受控环境中已存在且只读的测试文件路径。
 const EXISTING_FILE: &str = "测试文件夹/fast-sync.exe";

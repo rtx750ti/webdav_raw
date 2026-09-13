@@ -1,12 +1,10 @@
-#[path = "../../../common/local_http.rs"]
-mod local_http;
-
 use webdav_core::Client;
 use webdav_core::{Depth, PropFindBuilder};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 
-use crate::fixtures::RAW_RESULT_1;
+use crate::common::local_http;
+use crate::support::fixtures::RAW_RESULT_1;
 
 /// 验证 207 响应会解析为完整且有序的 MultiStatus 结果。
 #[tokio::test]

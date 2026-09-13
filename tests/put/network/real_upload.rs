@@ -12,10 +12,9 @@
 //! cargo test --features network-test --test put -- --ignored
 //! ```
 
-#[path = "../../common/network_config.rs"]
-mod network_config;
-
 use webdav_core::{PutBody, U8Bytes, U8BytesData, U8Metadata, WebdavAuth};
+
+use crate::common::network_config;
 
 /// 用真实账号向受控服务发送一次 PUT，确认认证与请求构建可用。
 #[tokio::test]

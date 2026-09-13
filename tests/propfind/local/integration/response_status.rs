@@ -1,10 +1,9 @@
-#[path = "../../../common/local_http.rs"]
-mod local_http;
-
 use webdav_core::Client;
 use webdav_core::{PropFindBuilder, PropFindError};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
+
+use crate::common::local_http;
 
 /// 验证非 207 响应会映射为携带原始状态码的协议错误。
 #[tokio::test]

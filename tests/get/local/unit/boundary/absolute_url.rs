@@ -1,6 +1,6 @@
 use webdav_core::GetBuilder;
 
-use crate::support::{base_url, client};
+use crate::support::fixtures::{base_url, client};
 
 /// 验证绝对地址会覆盖认证根地址。
 #[test]

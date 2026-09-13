@@ -1,11 +1,9 @@
-#[path = "../../../common/local_http.rs"]
-mod local_http;
-
 use webdav_core::WebdavAuth;
 use wiremock::matchers::{body_string, header, method, path};
 use wiremock::{Mock, ResponseTemplate};
 
-use crate::support::{bytes_body, bytes_body_with_content_type};
+use crate::common::local_http;
+use crate::support::fixtures::{bytes_body, bytes_body_with_content_type};
 
 /// 认证对象创建 PUT 请求：方法、目标路径与默认 Authorization 都正确。
 #[tokio::test]

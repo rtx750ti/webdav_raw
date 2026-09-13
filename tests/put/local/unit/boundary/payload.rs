@@ -4,7 +4,7 @@
 
 use webdav_core::{FileHandle, PutBody, PutData, U8Bytes, U8BytesChunk, U8BytesData, U8Metadata};
 
-use crate::support::{bytes_body, default_metadata, metadata, write_temp_file};
+use crate::support::fixtures::{bytes_body, default_metadata, metadata, write_temp_file};
 
 #[test]
 fn empty_metadata_has_no_optional_values() {
@@ -132,7 +132,7 @@ async fn empty_file_is_an_accepted_source() {
 
     assert!(matches!(body.data, PutData::File(_)));
 
-    crate::support::remove_temp_file(&path).await;
+    crate::support::fixtures::remove_temp_file(&path).await;
 }
 
 /// 元数据字段公开，调用方可以直接改写。

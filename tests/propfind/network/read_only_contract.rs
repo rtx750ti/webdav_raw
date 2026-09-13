@@ -1,8 +1,7 @@
-#[path = "../../common/network_config.rs"]
-mod network_config;
-
 use webdav_core::WebdavAuth;
 use webdav_core::{Depth, PropFindError};
+
+use crate::common::network_config;
 
 /// 验证真实服务的目录 PROPFIND；仅在受控环境手动执行。
 #[tokio::test]

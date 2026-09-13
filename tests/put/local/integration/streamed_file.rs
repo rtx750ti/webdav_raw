@@ -1,12 +1,10 @@
-#[path = "../../../common/local_http.rs"]
-mod local_http;
-
 use webdav_core::WebdavAuth;
 use webdav_core::{PutBody, FileHandle};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 
-use crate::support::{remove_temp_file, write_temp_file};
+use crate::common::local_http;
+use crate::support::fixtures::{remove_temp_file, write_temp_file};
 
 /// 文件源以流式发送：服务端收到的字节与源文件一致，长度确定，不退化为 chunked。
 #[tokio::test]

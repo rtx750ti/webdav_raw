@@ -1,11 +1,9 @@
-#[path = "../../../common/local_http.rs"]
-mod local_http;
-
 use webdav_core::WebdavAuth;
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 
-use crate::support::bytes_body;
+use crate::common::local_http;
+use crate::support::fixtures::bytes_body;
 
 /// 服务端错误状态原样返回，本库不做过滤。
 #[tokio::test]
@@ -103,7 +101,7 @@ async fn chunk_put_status_is_passed_through_uninterpreted() {
         .put()
         .relative_path("chunk.bin")
         .expect("相对路径必须有效")
-        .body(crate::support::bytes_body(b"chunk".to_vec()))
+        .body(crate::support::fixtures::bytes_body(b"chunk".to_vec()))
         .send()
         .await
         .expect("PUT 应发送成功");

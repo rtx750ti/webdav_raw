@@ -1,6 +1,6 @@
 use webdav_core::MultiStatus;
 
-use crate::fixtures::{RAW_RESULT_1, RAW_RESULT_2, parse_fixture, response_semantics};
+use crate::support::fixtures::{RAW_RESULT_1, RAW_RESULT_2, parse_fixture, response_semantics};
 
 /// 验证两份真实 XML 固件经过序列化和再次解析后保持模型语义。
 #[test]

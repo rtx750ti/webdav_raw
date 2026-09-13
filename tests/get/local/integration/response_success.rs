@@ -1,9 +1,8 @@
-#[path = "../../../common/local_http.rs"]
-mod local_http;
-
 use webdav_core::WebdavAuth;
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
+
+use crate::common::local_http;
 
 /// 验证成功响应的状态、响应头和响应体会原样交给调用方。
 #[tokio::test]

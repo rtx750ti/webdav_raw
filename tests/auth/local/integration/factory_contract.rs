@@ -1,10 +1,9 @@
-#[path = "../../../common/local_http.rs"]
-mod local_http;
-
-use webdav_core::auth::WebdavAuth;
-use webdav_core::propfind::builder::Depth;
+use webdav_core::WebdavAuth;
+use webdav_core::Depth;
 use wiremock::matchers::{header, method, path};
 use wiremock::{Mock, ResponseTemplate};
+
+use crate::common::local_http;
 
 /// 验证认证对象创建的 GET 和 PROPFIND Builder 复用根地址与客户端配置。
 #[tokio::test]
