@@ -1,4 +1,4 @@
-use webdav_core::propfind::raw_xml::multistatus::MultiStatus;
+use webdav_core::MultiStatus;
 
 use crate::fixtures::{RAW_RESULT_1, RAW_RESULT_2, parse_fixture, response_semantics};
 

@@ -7,9 +7,7 @@
 
 use std::path::{Path, PathBuf};
 
-use webdav_core::put::put_body::u8_bytes::U8Metadata;
-use webdav_core::put::put_body::u8_bytes_data::U8BytesData;
-use webdav_core::put::put_body::{PutBody, u8_bytes::U8Bytes};
+use webdav_core::{PutBody, U8Bytes, U8BytesData, U8Metadata};
 
 /// 创建带指定内容类型的元数据。
 ///

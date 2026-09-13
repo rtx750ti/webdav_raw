@@ -5,9 +5,9 @@
 
 use webdav_core::Client;
 use webdav_core::Url;
-use webdav_core::put::builder::{PutBuilder, PutError};
-use webdav_core::put::put_body::u8_bytes_chunk::{U8BytesChunk, U8BytesChunkError};
-use webdav_core::put::put_body::u8_bytes_data::U8BytesData;
+use webdav_core::{PutBuilder, PutError};
+use webdav_core::{U8BytesChunk, U8BytesChunkError};
+use webdav_core::U8BytesData;
 
 /// 构造基准 Builder，供路径与请求头错误复用。
 fn builder() -> PutBuilder {

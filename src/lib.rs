@@ -1,18 +1,61 @@
-pub mod auth;
+//! # webdav-core
+//!
+//! WebDAV 客户端核心。提供认证对象，以及 GET、PROPFIND、PUT 三个领域的请求
+//! 构建与原样响应透传。
+//!
+//! # 模块规范
+//!
+//! 实现模块全部私有，对外只暴露本文件中的再导出。因此调用方只需要写
+//! `webdav_core::PutBuilder` 这类短路径，不必了解内部的文件分层。
+//!
+//! 依赖类型（`reqwest`、`url`）也在这里集中转发，调用方不必自己声明同样的依赖
+//! 版本，避免版本错配。
+
+// ── 已实现领域：模块私有，只经下方再导出对外 ──
+mod auth;
+mod get;
+mod propfind;
+mod put;
+
+// ── 尚未实现的领域 ──
 pub mod copy;
 pub mod delete;
-pub mod propfind;
-pub mod get;
 pub mod head;
 pub mod mkcol;
 pub mod options;
 pub mod proppatch;
-pub mod put;
 
 /// `move` 是 Rust 关键字，使用原始标识符导出 WebDAV MOVE 模块。
 pub mod r#move;
 
+// ── 认证 ──
+pub use auth::{WebdavAuth, WebdavAuthError};
+
+// ── GET ──
+pub use get::builder::{GetBuilder, GetError};
+
+// ── PUT ──
+pub use put::builder::{PutBuilder, PutError};
+pub use put::put_body::file_handle::FileHandle;
+pub use put::put_body::u8_bytes::{U8Bytes, U8BytesError, U8Metadata};
+pub use put::put_body::u8_bytes_chunk::{U8BytesChunk, U8BytesChunkError};
+pub use put::put_body::u8_bytes_data::{BytesDataId, U8BytesData, U8BytesDataError};
+pub use put::put_body::{PutBody, PutData};
+
+// ── PROPFIND ──
+pub use propfind::builder::{Depth, PropFindBuilder, PropFindError};
+pub use propfind::find_props::{FindProp, PropFindSelector};
+pub use propfind::raw_xml::multistatus::MultiStatus;
+pub use propfind::raw_xml::prop::Prop;
+pub use propfind::raw_xml::propstat::PropStat;
+pub use propfind::raw_xml::resourcetype::{EmptyElement, ResourceType};
+
+/// XML `<response>` 元素。
+///
+/// 与 HTTP 的 [`Response`] 同名，因此在这里用别名导出以示区分。
+pub use propfind::raw_xml::response::Response as ResourceResponse;
+
+// ── 依赖类型集中转发，避免版本错配 ──
 pub use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
-/// 集中导出，避免版本问题以及让开发者多次下载依赖
 pub use reqwest::{Body, Client, Request, Response, StatusCode};
 pub use url::{ParseError, Url};

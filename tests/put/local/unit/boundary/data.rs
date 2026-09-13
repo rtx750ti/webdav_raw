@@ -3,8 +3,8 @@
 //! 长度是唯一信任源：由字节算出，不接受调用方声明。分片范围采用闭区间语义，
 //! `0..=1` 表示两个字节。
 
-use webdav_core::put::put_body::u8_bytes_chunk::{U8BytesChunk, U8BytesChunkError};
-use webdav_core::put::put_body::u8_bytes_data::U8BytesData;
+use webdav_core::{U8BytesChunk, U8BytesChunkError};
+use webdav_core::U8BytesData;
 
 #[test]
 fn empty_data_has_zero_length() {

@@ -1,4 +1,4 @@
-use webdav_core::propfind::builder::Depth;
+use webdav_core::Depth;
 
 /// 验证三种 WebDAV Depth 值映射为协议请求头。
 #[test]

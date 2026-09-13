@@ -1,4 +1,4 @@
-use webdav_core::auth::WebdavAuth;
+use webdav_core::WebdavAuth;
 
 /// 验证完整身份比较同时覆盖根地址和认证凭据。
 #[test]

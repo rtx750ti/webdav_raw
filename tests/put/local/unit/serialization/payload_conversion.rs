@@ -3,11 +3,11 @@
 //! 覆盖"来源到请求体字节、元数据到请求头"的一致性，以及三种来源经 Builder 后的
 //! 语义是否一致。
 
-use webdav_core::put::builder::PutBuilder;
-use webdav_core::put::put_body::u8_bytes::U8Bytes;
-use webdav_core::put::put_body::u8_bytes_chunk::U8BytesChunk;
-use webdav_core::put::put_body::u8_bytes_data::U8BytesData;
-use webdav_core::put::put_body::{PutBody, file_handle::FileHandle};
+use webdav_core::PutBuilder;
+use webdav_core::U8Bytes;
+use webdav_core::U8BytesChunk;
+use webdav_core::U8BytesData;
+use webdav_core::{PutBody, FileHandle};
 use webdav_core::{Client, Request, Url};
 
 use crate::support::{

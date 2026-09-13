@@ -1,4 +1,4 @@
-use webdav_core::auth::{WebdavAuth, WebdavAuthError};
+use webdav_core::{WebdavAuth, WebdavAuthError};
 
 /// 验证空根地址会返回明确错误。
 #[test]

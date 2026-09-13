@@ -1,6 +1,6 @@
 //! Builder 的路径、请求头与默认值分支。
 
-use webdav_core::put::builder::{PutBuilder, PutError};
+use webdav_core::{PutBuilder, PutError};
 use webdav_core::{Client, HeaderMap, HeaderValue, Request, Url};
 
 use crate::support::{bytes_body, bytes_body_with_content_type};

@@ -1,4 +1,4 @@
-use webdav_core::propfind::builder::PropFindBuilder;
+use webdav_core::PropFindBuilder;
 use webdav_core::{Client, Url};
 
 /// 验证 PROPFIND 路径保留根路径并处理编码和点路径。

@@ -2,14 +2,7 @@
 //!
 //! 覆盖空值、单字节、空文件、空分片，以及"来源与元数据正交"这一点。
 
-use webdav_core::put::put_body::u8_bytes::U8Metadata;
-use webdav_core::put::put_body::u8_bytes_data::U8BytesData;
-use webdav_core::put::put_body::{
-    PutBody, PutData,
-    u8_bytes::U8Bytes,
-    u8_bytes_chunk::U8BytesChunk,
-    file_handle::FileHandle,
-};
+use webdav_core::{FileHandle, PutBody, PutData, U8Bytes, U8BytesChunk, U8BytesData, U8Metadata};
 
 use crate::support::{bytes_body, default_metadata, metadata, write_temp_file};
 

@@ -15,10 +15,7 @@
 #[path = "../../common/network_config.rs"]
 mod network_config;
 
-use webdav_core::auth::WebdavAuth;
-use webdav_core::put::put_body::u8_bytes::U8Metadata;
-use webdav_core::put::put_body::u8_bytes_data::U8BytesData;
-use webdav_core::put::put_body::{PutBody, u8_bytes::U8Bytes};
+use webdav_core::{PutBody, U8Bytes, U8BytesData, U8Metadata, WebdavAuth};
 
 /// 用真实账号向受控服务发送一次 PUT，确认认证与请求构建可用。
 #[tokio::test]

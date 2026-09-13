@@ -1,8 +1,8 @@
 #[path = "../../../common/local_http.rs"]
 mod local_http;
 
-use webdav_core::auth::WebdavAuth;
-use webdav_core::put::put_body::{PutBody, file_handle::FileHandle};
+use webdav_core::WebdavAuth;
+use webdav_core::{PutBody, FileHandle};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 

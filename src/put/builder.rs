@@ -142,12 +142,7 @@ impl PutPayload {
 /// 需要发送该头时由调用方显式设置：
 ///
 /// ```
-/// use webdav_core::put::builder::PutBuilder;
-/// use webdav_core::put::put_body::{
-///     PutBody,
-///     u8_bytes_chunk::U8BytesChunk,
-///     u8_bytes_data::U8BytesData,
-/// };
+/// use webdav_core::{PutBody, PutBuilder, U8BytesChunk, U8BytesData};
 /// # fn example(builder: PutBuilder) -> Result<(), Box<dyn std::error::Error>> {
 /// let data = U8BytesData::new(vec![0; 4], None)?;
 /// let chunk = U8BytesChunk::new(data, Some(0), Some(3), Some(8), None)?;
@@ -190,7 +185,7 @@ impl PutBuilder {
     /// 覆盖掉根地址中已有的路径前缀。
     ///
     /// ```
-    /// use webdav_core::put::builder::PutBuilder;
+    /// use webdav_core::PutBuilder;
     /// use webdav_core::{Client, Url};
     ///
     /// let builder = PutBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);

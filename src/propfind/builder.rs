@@ -93,7 +93,7 @@ impl PropFindBuilder {
     ///
     /// ```rust
     /// use webdav_core::{Client, Url};
-    /// use webdav_core::propfind::builder::PropFindBuilder;
+    /// use webdav_core::PropFindBuilder;
     ///
     /// let base_url = Url::parse("https://example.com/webdav/").unwrap();
     /// let builder = PropFindBuilder::new(Client::new(), base_url);
@@ -140,8 +140,8 @@ impl PropFindBuilder {
     ///
     /// ```rust
     /// use webdav_core::{Client, Url};
-    /// use webdav_core::propfind::builder::PropFindBuilder;
-    /// use webdav_core::propfind::find_props::FindProp;
+    /// use webdav_core::PropFindBuilder;
+    /// use webdav_core::FindProp;
     ///
     /// let base_url = Url::parse("https://example.com/webdav/").unwrap();
     /// let builder = PropFindBuilder::new(Client::new(), base_url);

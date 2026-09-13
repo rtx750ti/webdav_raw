@@ -2,7 +2,7 @@
 mod local_http;
 
 use webdav_core::Client;
-use webdav_core::propfind::builder::{Depth, PropFindBuilder};
+use webdav_core::{Depth, PropFindBuilder};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 

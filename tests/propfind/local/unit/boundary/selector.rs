@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use webdav_core::propfind::find_props::{FindProp, PropFindSelector};
+use webdav_core::{FindProp, PropFindSelector};
 
 /// 验证 allprop、propname 和空属性集都生成各自的 XML 结构。
 #[test]
