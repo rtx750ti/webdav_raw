@@ -34,6 +34,35 @@ fn empty_bytes_body_is_still_a_memory_source() {
     assert!(matches!(body.data, PutData::U8Bytes(_)));
 }
 
+/// 三种数据源都能用 `PutBody::new` 显式装配，不必走专用构造方法。
+#[test]
+fn put_body_new_accepts_every_data_source() {
+    let data = U8BytesData::new(vec![1], None).expect("应构造成功");
+    let body = PutBody::new(PutData::U8Bytes(U8Bytes::new(data, default_metadata())));
+    assert!(matches!(body.data, PutData::U8Bytes(_)));
+
+    let data = U8BytesData::new(vec![1], None).expect("应构造成功");
+    let chunk = U8BytesChunk::new(data, None, None, None, None).expect("应构造成功");
+    let body = PutBody::new(PutData::U8BytesChunk(chunk));
+    assert!(matches!(body.data, PutData::U8BytesChunk(_)));
+}
+
+/// `PutBody.data` 是公开字段，调用方可以直接替换数据源。
+#[tokio::test]
+async fn put_body_data_field_can_be_replaced() {
+    let path = write_temp_file("replace_source", b"x").await;
+    let file = tokio::fs::File::open(&path)
+        .await
+        .expect("临时文件必须可打开");
+
+    let mut body = bytes_body(vec![1, 2, 3]);
+    body.data = PutData::File(FileHandle::new(file, None));
+
+    assert!(matches!(body.data, PutData::File(_)));
+
+    crate::support::fixtures::remove_temp_file(&path).await;
+}
+
 /// `U8Bytes::new` 把数据与元数据原样绑定，不做二次加工。
 #[test]
 fn u8_bytes_new_binds_data_and_metadata() {

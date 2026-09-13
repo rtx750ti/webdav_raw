@@ -130,3 +130,61 @@ fn custom_content_type_can_be_assigned_directly() {
     assert_eq!(metadata.content_type, "application/x-custom");
     assert!(metadata.validate().is_ok());
 }
+
+/// 空内容类型既不是合法 MIME，也写不出 `Content-Type`，必须被校验拦住。
+#[test]
+fn empty_content_type_fails_validation() {
+    let mut metadata = U8Metadata::from_name("a.txt".to_owned()).expect("推断必须成功");
+
+    metadata.content_type = String::new();
+
+    assert!(
+        metadata.validate().is_err(),
+        "空内容类型不能留给服务端猜，必须被校验发现"
+    );
+}
+
+/// 内容类型带参数时仍然是合法 MIME，也仍然能进请求头。
+#[test]
+fn content_type_with_parameters_passes_validation() {
+    let mut metadata = U8Metadata::from_name("a.txt".to_owned()).expect("推断必须成功");
+
+    metadata.content_type = "text/plain; charset=utf-8".to_owned();
+
+    assert!(metadata.validate().is_ok());
+}
+
+/// 内容类型只有类型没有子类型时不算合法 MIME。
+#[test]
+fn content_type_without_subtype_fails_validation() {
+    let mut metadata = U8Metadata::from_name("a.txt".to_owned()).expect("推断必须成功");
+
+    metadata.content_type = "text".to_owned();
+
+    assert!(metadata.validate().is_err());
+}
+
+/// 文件名形态再怪，推断结果也必须合法 MIME 且能写进请求头。
+///
+/// `.hidden`、结尾带点的 `trailing.`、中文名、带空格的名字都可能出现在真实
+/// 文件系统里，推断不能因为形态特殊就产出非法取值。
+#[test]
+fn odd_file_names_still_produce_valid_content_type() {
+    let cases = [
+        ".hidden",
+        "trailing.",
+        "中文文件名.txt",
+        "has space.zip",
+        "多段.扩展.名.json",
+    ];
+
+    for name in cases {
+        let metadata = U8Metadata::from_name(name.to_owned()).expect("非空文件名必须能推断");
+
+        assert_eq!(metadata.name, name, "文件名必须原样保留");
+        assert!(
+            metadata.validate().is_ok(),
+            "文件名 {name} 推断出的内容类型必须合法"
+        );
+    }
+}

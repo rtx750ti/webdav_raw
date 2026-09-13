@@ -11,7 +11,8 @@ use webdav_core::{PutBody, U8Bytes, U8BytesData, U8Metadata};
 
 /// 创建带指定内容类型的元数据。
 ///
-/// 内容类型是必填项：`U8Metadata` 的构造点会校验它。
+/// 这里用结构体字面量直接拼装，因此传入非法内容类型不会被拦下：`U8Metadata`
+/// 的字段是公开的，校验只发生在 `from_name` / `validate`。
 pub fn metadata(content_type: &str) -> U8Metadata {
     U8Metadata {
         name: "test.bin".to_owned(),
@@ -43,10 +44,8 @@ pub fn bytes_body_with_content_type(data: impl Into<Vec<u8>>, content_type: &str
 ///
 /// 文件名带上 `tag` 与进程号，保证并行执行的测试之间互不冲突。
 pub async fn write_temp_file(tag: &str, content: &[u8]) -> PathBuf {
-    let path = std::env::temp_dir().join(format!(
-        "webdav_core_put_{}_{tag}.bin",
-        std::process::id()
-    ));
+    let path =
+        std::env::temp_dir().join(format!("webdav_core_put_{}_{tag}.bin", std::process::id()));
 
     tokio::fs::write(&path, content)
         .await

@@ -3,8 +3,8 @@
 //! 长度是唯一信任源：由字节算出，不接受调用方声明。分片范围采用闭区间语义，
 //! `0..=1` 表示两个字节。
 
-use webdav_core::{U8BytesChunk, U8BytesChunkError};
 use webdav_core::U8BytesData;
+use webdav_core::{U8BytesChunk, U8BytesChunkError};
 
 #[test]
 fn empty_data_has_zero_length() {
@@ -59,6 +59,27 @@ fn take_clears_bytes_and_resets_length() {
     assert_eq!(data.into_data(), Vec::<u8>::new());
 }
 
+/// `Default` 与 `new(Vec::new(), None)` 表现一致：长度零、字节为空。
+#[test]
+fn default_data_is_empty_and_self_consistent() {
+    let data = U8BytesData::default();
+
+    assert_eq!(data.length, 0);
+    assert!(data.is_empty());
+    assert_eq!(data.id, None);
+    assert_eq!(data.into_data(), Vec::<u8>::new());
+}
+
+/// 空数据上取字节同样把长度归零，不会出现负数或残留长度。
+#[test]
+fn take_on_empty_data_stays_consistent() {
+    let mut data = U8BytesData::default();
+
+    assert!(data.take().is_empty());
+    assert_eq!(data.length, 0);
+    assert!(data.is_empty());
+}
+
 #[test]
 fn omitted_range_is_accepted() {
     let data = U8BytesData::new(vec![1, 2], None).expect("应构造成功");
@@ -69,6 +90,57 @@ fn omitted_range_is_accepted() {
     assert_eq!(chunk.total_length, None);
     assert_eq!(chunk.data.length, 2);
     assert_eq!(chunk.to_content_range(), None, "没有范围就没有请求头取值");
+}
+
+/// 空数据也可以是不带范围的分片。
+#[test]
+fn empty_chunk_without_range_is_accepted() {
+    let chunk = U8BytesChunk::new(U8BytesData::default(), None, None, None, None)
+        .expect("空数据不带范围应构造成功");
+
+    assert_eq!(chunk.data.length, 0);
+    assert!(chunk.data.is_empty());
+    assert_eq!(chunk.to_content_range(), None);
+}
+
+/// 空数据配上范围时，范围长度 1 与数据长度 0 对不上。
+#[test]
+fn empty_chunk_with_range_is_rejected() {
+    let data = U8BytesData::new(Vec::new(), None).expect("应构造成功");
+
+    assert!(matches!(
+        U8BytesChunk::new(data, Some(0), Some(0), None, None),
+        Err(U8BytesChunkError::LengthMismatch {
+            range_length: 1,
+            data_length: 0
+        })
+    ));
+}
+
+/// `create_time` 只落到字段上：既不参与校验，也不进请求头。
+#[test]
+fn create_time_is_kept_without_being_validated() {
+    let data = U8BytesData::new(vec![1], None).expect("应构造成功");
+    let chunk = U8BytesChunk::new(data, None, None, None, Some("任意文本".to_owned()))
+        .expect("create_time 不参与校验");
+
+    assert_eq!(chunk.create_time.as_deref(), Some("任意文本"));
+    assert_eq!(chunk.to_content_range(), None);
+}
+
+/// 只给总长度、不给起止范围时字段被保留，但不产生请求头取值。
+#[test]
+fn total_length_without_range_stays_local() {
+    let data = U8BytesData::new(vec![1], None).expect("应构造成功");
+    let chunk =
+        U8BytesChunk::new(data, None, None, Some(1024), None).expect("只有总长度应构造成功");
+
+    assert_eq!(chunk.total_length, Some(1024));
+    assert_eq!(
+        chunk.to_content_range(),
+        None,
+        "没有起止范围就没有 Content-Range"
+    );
 }
 
 #[test]
@@ -86,8 +158,7 @@ fn inclusive_range_is_preserved_and_converted() {
 #[test]
 fn range_without_total_length_converts_without_total() {
     let data = U8BytesData::new(vec![1], None).expect("应构造成功");
-    let chunk =
-        U8BytesChunk::new(data, Some(9), Some(9), None, None).expect("合法分片应构造成功");
+    let chunk = U8BytesChunk::new(data, Some(9), Some(9), None, None).expect("合法分片应构造成功");
 
     assert_eq!(chunk.to_content_range().as_deref(), Some("bytes 9-9"));
 }

@@ -2,10 +2,7 @@
 //!
 //! 一个 Builder 只构建一次 PUT；分片上传由调用方循环构建每一次请求。
 
-use crate::put::put_body::{
-    PutBody, PutData,
-    u8_bytes::U8Bytes, u8_bytes_chunk::U8BytesChunk,
-};
+use crate::put::put_body::{PutBody, PutData, u8_bytes::U8Bytes, u8_bytes_chunk::U8BytesChunk};
 use reqwest::{
     Body, Client, Method, Request, Response,
     header::{CONTENT_LENGTH, CONTENT_TYPE, HeaderMap, HeaderName, HeaderValue},
@@ -17,6 +14,24 @@ use url::Url;
 const DEFAULT_CONTENT_TYPE: &str = "application/octet-stream";
 
 /// PUT 请求构建和发送错误。
+///
+/// # 失败怎么区分
+///
+/// 本地错误各有自己的变体，网络相关的失败集中在 [`PutError::Request`] 里，再用
+/// `reqwest::Error` 自己的判定方法细分：
+///
+/// - **发送前的本地错误**：URL 写错是 [`PutError::Url`]，请求头写错是
+///   [`PutError::HeaderName`] / [`PutError::HeaderValue`]，文件句柄取不到长度是
+///   [`PutError::FileMetadata`]。这些都不会发出任何网络请求。
+/// - **请求构建失败**：[`PutError::Request`]，`reqwest::Error::is_builder`。
+/// - **请求发送失败**：[`PutError::Request`]，可用 `reqwest::Error::is_connect`、
+///   `is_timeout`、`is_redirect` 等继续细分。
+/// - **请求体读到一半失败**（文件被删、磁盘错误、连接被对端掐断）：
+///   同样是 [`PutError::Request`]，可用 `reqwest::Error::is_body` 识别。文件源是
+///   流式发送的，字节在发送阶段才被读取，所以这一类失败只可能出现在这里。
+///
+/// 本库不替调用方重试，也不把服务端状态码当成错误：状态码原样留在
+/// [`Response`](reqwest::Response) 里。
 #[derive(Debug, Error)]
 pub enum PutError {
     #[error("构建 HTTP 请求失败: {0}")]
@@ -26,7 +41,7 @@ pub enum PutError {
     /// 文件源取长度失败，即 `File::metadata` 失败。
     ///
     /// 这不是「读取文件内容失败」：内容读取发生在请求发送阶段，其失败由
-    /// [`PutError::Request`] 承载。
+    /// [`PutError::Request`] 承载（`reqwest::Error::is_body()`）。
     #[error("读取文件长度失败: {0}")]
     FileMetadata(#[from] std::io::Error),
     #[error("请求头名称格式错误: {0}")]
@@ -130,6 +145,10 @@ impl PutPayload {
 /// - `Content-Type`：优先取调用方设置的值；否则取内存源元数据里的值；
 ///   都没有就用 `application/octet-stream`。
 ///
+/// 本库只保证把 `Content-Type` 写进请求头，**不保证服务端采纳**：真实验收中已经
+/// 遇到 Apache `mod_dav` 完全忽略它，GET 时按文件扩展名重新推断。要让服务端认对
+/// 类型，把目标路径的扩展名写对通常比声明 `Content-Type` 更有效。
+///
 /// 其余请求头一律由调用方通过 [`header`](Self::header) /
 /// [`headers`](Self::headers) 设置。
 ///
@@ -200,6 +219,29 @@ impl PutBuilder {
     }
 
     /// 用完整 URL 设置目标地址，不使用认证根地址。
+    ///
+    /// # 凭据只会跟着认证 Client 走
+    ///
+    /// 这里换掉的是地址，换不掉 Client：认证对象默认注入的 `Authorization`
+    /// 请求头对本 Client 发出的**每一个**请求都生效。因此指向另一个主机时，
+    /// 凭据会一并发过去。只有确认目标主机可信时才这样用；不确定就退回
+    /// [`relative_path`](Self::relative_path)，它是拼接在认证根地址下的。
+    ///
+    /// # 只检查语法，不检查协议
+    ///
+    /// `ftp://` 这类地址语法合法，能通过 [`build`](Self::build)，但发不出去：
+    /// 协议检查发生在发送阶段，[`send`](Self::send) 会以 [`PutError::Request`]
+    /// 报错。本库不额外拦一道，避免和 reqwest 出现两套规则。
+    ///
+    /// ```
+    /// use webdav_core::PutBuilder;
+    /// use webdav_core::{Client, Url};
+    ///
+    /// let builder = PutBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
+    /// let builder = builder.absolute_path("https://upload.example.com/file.bin")?;
+    /// # let _ = builder;
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
     pub fn absolute_path(mut self, path: &str) -> Result<Self, PutError> {
         self.target_path = Url::parse(path)?;
 
@@ -217,6 +259,20 @@ impl PutBuilder {
     ///
     /// 这里设的 `Content-Type` 优先于默认值。`Content-Length` 不受影响：它始终
     /// 由数据源自身的长度决定。
+    ///
+    /// 同名请求头是**替换**语义：后设的覆盖先设的，不追加第二个同名头。
+    ///
+    /// ```
+    /// use webdav_core::PutBuilder;
+    /// use webdav_core::{Client, Url};
+    ///
+    /// let builder = PutBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
+    /// let builder = builder
+    ///     .header("if-match", "\"v1\"")?
+    ///     .header("x-note", "第一次上传")?;
+    /// # let _ = builder;
+    /// # Ok::<(), Box<dyn std::error::Error>>(())
+    /// ```
     pub fn header(mut self, name: &str, value: &str) -> Result<Self, PutError> {
         self.headers
             .insert(HeaderName::try_from(name)?, HeaderValue::try_from(value)?);
@@ -225,6 +281,10 @@ impl PutBuilder {
     }
 
     /// 批量追加请求头，优先级同 [`header`](Self::header)。
+    ///
+    /// 这个方法不返回 `Result`，是因为 `HeaderMap` 里的名称和取值在构造时就已经
+    /// 校验过，装进来的不可能非法——和 [`header`](Self::header) 接收 `&str`
+    /// 需要现场解析不同。同名请求头同样是替换语义。
     pub fn headers(mut self, headers: HeaderMap) -> Self {
         self.headers.extend(headers);
 
@@ -234,7 +294,30 @@ impl PutBuilder {
     /// 构建请求但不发送。
     ///
     /// 文件源会在这里读一次文件长度，这是整个构建过程中唯一的一次 I/O；字节本身
-    /// 在请求发送阶段才被读取，不会整体进入内存。
+    /// 在请求发送阶段才被读取，不会整体进入内存。因此句柄必须处于文件起始位置，
+    /// 理由见 [`FileHandle`](crate::put::put_body::file_handle::FileHandle)。
+    ///
+    /// ```
+    /// use webdav_core::{PutBody, PutBuilder, U8Bytes, U8BytesData, U8Metadata};
+    /// use webdav_core::{Client, Url};
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// let data = U8BytesData::new(b"hello".to_vec(), None)?;
+    /// let metadata = U8Metadata::from_name("hello.txt".to_owned())?;
+    ///
+    /// let request = PutBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?)
+    ///     .relative_path("hello.txt")?
+    ///     .body(PutBody::from_bytes(U8Bytes::new(data, metadata)))
+    ///     .build()
+    ///     .await?;
+    ///
+    /// assert_eq!(request.method().as_str(), "PUT");
+    /// assert_eq!(request.url().as_str(), "https://example.com/dav/hello.txt");
+    /// assert_eq!(request.headers().get("content-length").unwrap(), "5");
+    /// assert_eq!(request.headers().get("content-type").unwrap(), "text/plain");
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn build(self) -> Result<Request, PutError> {
         let Self {
             client,

@@ -7,8 +7,8 @@ use webdav_core::PutBuilder;
 use webdav_core::U8Bytes;
 use webdav_core::U8BytesChunk;
 use webdav_core::U8BytesData;
-use webdav_core::{PutBody, FileHandle};
 use webdav_core::{Client, Request, Url};
+use webdav_core::{FileHandle, PutBody};
 
 use crate::support::fixtures::{
     bytes_body, bytes_body_with_content_type, metadata, remove_temp_file, write_temp_file,
@@ -183,4 +183,85 @@ async fn all_three_sources_produce_equivalent_request_semantics() {
         file_request.body().unwrap().as_bytes().is_none(),
         "文件源必须是流式 body，不能整体读入内存"
     );
+}
+
+/// 分片不带范围时，除范围之外的一切表现与内存源一致。
+#[tokio::test]
+async fn chunk_without_range_converts_like_a_plain_body() {
+    let data = U8BytesData::new(vec![1, 2, 3], None).expect("应构造成功");
+    let chunk = U8BytesChunk::new(data, None, None, None, None).expect("应构造成功");
+
+    let request = builder()
+        .body(PutBody::from_chunk(chunk))
+        .build()
+        .await
+        .expect("请求应构建成功");
+
+    assert_eq!(content_length(&request), "3");
+    assert_eq!(request.body().unwrap().as_bytes().unwrap(), &[1, 2, 3]);
+    assert!(request.headers().get("content-range").is_none());
+    assert_eq!(
+        request.headers().get("content-type").unwrap(),
+        "application/octet-stream",
+        "分片源没有内容类型信息，应回落为默认值"
+    );
+}
+
+/// 空内存源转换出零长度请求体，内容类型仍是元数据里显式写的值。
+#[tokio::test]
+async fn empty_memory_source_converts_to_zero_length_body() {
+    let request = builder()
+        .body(bytes_body_with_content_type(Vec::new(), "text/plain"))
+        .build()
+        .await
+        .expect("请求应构建成功");
+
+    assert_eq!(content_length(&request), "0");
+    assert!(
+        request
+            .body()
+            .unwrap()
+            .as_bytes()
+            .expect("内存源必须是内存 body")
+            .is_empty()
+    );
+    assert_eq!(request.headers().get("content-type").unwrap(), "text/plain");
+}
+
+/// 追踪标识只留在本地模型里：任何来源的 id 都不会变成请求头。
+///
+/// 设计边界把 `id` 定为调用方侧的检索手段，一旦进了请求头就会变成一个
+/// 服务端并不认识的字段，因此这里把"不进请求头"固定成契约。
+#[tokio::test]
+async fn tracking_ids_never_become_request_headers() {
+    let data = U8BytesData::new(vec![1], Some("data-42".to_owned())).expect("应构造成功");
+    let request = builder()
+        .body(PutBody::from_bytes(U8Bytes::new(
+            data,
+            metadata("application/zip"),
+        )))
+        .build()
+        .await
+        .expect("请求应构建成功");
+
+    assert!(request.headers().get("id").is_none());
+    assert!(request.headers().get("x-id").is_none());
+    assert!(request.headers().get("x-data-id").is_none());
+
+    let path = write_temp_file("tracking_id", b"x").await;
+    let file = tokio::fs::File::open(&path)
+        .await
+        .expect("临时文件必须可打开");
+    let request = builder()
+        .body(PutBody::from_file(FileHandle::new(
+            file,
+            Some("file-7".to_owned()),
+        )))
+        .build()
+        .await
+        .expect("请求应构建成功");
+    remove_temp_file(&path).await;
+
+    assert!(request.headers().get("id").is_none());
+    assert!(request.headers().get("x-file-id").is_none());
 }

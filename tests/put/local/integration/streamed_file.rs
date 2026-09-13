@@ -1,6 +1,8 @@
+//! 文件源的流式发送：字节、长度与请求头在真实 HTTP 链路上的表现。
+
 use webdav_core::WebdavAuth;
-use webdav_core::{PutBody, FileHandle};
-use wiremock::matchers::{method, path};
+use webdav_core::{FileHandle, PutBody};
+use wiremock::matchers::{header, method, path};
 use wiremock::{Mock, ResponseTemplate};
 
 use crate::common::local_http;
@@ -155,6 +157,46 @@ async fn single_byte_file_put_has_no_transfer_encoding() {
         received[0].headers.get("transfer-encoding").is_none(),
         "显式 Content-Length 下不应出现 transfer-encoding"
     );
+
+    remove_temp_file(&source).await;
+}
+
+/// 文件源自身没有内容类型信息，调用方设置的值优先于默认值。
+#[tokio::test]
+async fn caller_content_type_applies_to_file_source() {
+    let source = write_temp_file("file_content_type", b"typed").await;
+
+    let server = local_http::start_server().await;
+    Mock::given(method("PUT"))
+        .and(path("/dav/typed.bin"))
+        .and(header("content-type", "application/x-custom"))
+        .and(header("content-length", "5"))
+        .respond_with(ResponseTemplate::new(201))
+        .expect(1)
+        .mount(&server)
+        .await;
+
+    let auth = WebdavAuth::new(
+        "alice",
+        "password",
+        local_http::base_url(&server, "dav").as_str(),
+    )
+    .expect("回环地址应创建认证对象");
+    let file = tokio::fs::File::open(&source)
+        .await
+        .expect("临时文件必须可打开");
+
+    let response = auth
+        .put()
+        .relative_path("typed.bin")
+        .expect("相对路径必须有效")
+        .header("content-type", "application/x-custom")
+        .expect("合法请求头应被接受")
+        .body(PutBody::from_file(FileHandle::new(file, None)))
+        .send()
+        .await
+        .expect("文件源 PUT 应发送成功");
+    assert_eq!(response.status(), 201);
 
     remove_temp_file(&source).await;
 }
