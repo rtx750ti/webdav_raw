@@ -17,6 +17,7 @@ chrono = { version = "0.4", default-features = false, features = [
     "serde",
 ] }
 mime = "0.3.17"
+mime_guess = "2.0.5"
 percent-encoding = "2.3.2"
 base64 = { version = "0.22" }
 reqwest = { version = "0.12", default-features = false, features = [
@@ -52,3 +53,7 @@ path = "tests/get/mod.rs"
 [[test]]
 name = "propfind"
 path = "tests/propfind/mod.rs"
+
+[[test]]
+name = "put"
+path = "tests/put/mod.rs"

@@ -8,6 +8,7 @@ use reqwest::{
 use sha2::{Digest, Sha256};
 use url::Url;
 
+use crate::put::builder::PutBuilder;
 use crate::{get::builder::GetBuilder, propfind::builder::PropFindBuilder};
 
 /// WebDAV 认证相关错误
@@ -255,5 +256,10 @@ impl WebdavAuth {
 
     pub fn get(&self) -> GetBuilder {
         GetBuilder::new(self.client.clone(), self.base_url.clone())
+    }
+
+    /// 创建复用认证 Client 与根地址的 PUT Builder。
+    pub fn put(&self) -> PutBuilder {
+        PutBuilder::new(self.client.clone(), self.base_url.clone())
     }
 }
