@@ -13,13 +13,13 @@
 
 // ── 已实现领域：模块私有，只经下方再导出对外 ──
 mod auth;
+mod delete;
 mod get;
 mod propfind;
 mod put;
 
 // ── 尚未实现的领域 ──
 pub mod copy;
-pub mod delete;
 pub mod head;
 pub mod mkcol;
 pub mod options;
@@ -33,6 +33,9 @@ pub use auth::{WebdavAuth, WebdavAuthError};
 
 // ── GET ──
 pub use get::builder::{GetBuilder, GetError};
+
+// ── DELETE ──
+pub use delete::builder::{DeleteBuilder, DeleteDepth, DeleteError};
 
 // ── PUT ──
 pub use put::builder::{PutBuilder, PutError};
