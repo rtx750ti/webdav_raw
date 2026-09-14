@@ -71,6 +71,10 @@ name = "copy"
 path = "tests/copy/mod.rs"
 
 [[test]]
+name = "move"
+path = "tests/move/mod.rs"
+
+[[test]]
 name = "propfind"
 path = "tests/propfind/mod.rs"
 

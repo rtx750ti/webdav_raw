@@ -14,6 +14,7 @@ use crate::head::builder::HeadBuilder;
 use crate::mkcol::builder::MkcolBuilder;
 use crate::options::builder::OptionsBuilder;
 use crate::put::builder::PutBuilder;
+use crate::r#move::builder::MoveBuilder;
 use crate::{get::builder::GetBuilder, propfind::builder::PropFindBuilder};
 
 /// WebDAV 认证相关错误
@@ -291,5 +292,15 @@ impl WebdavAuth {
     /// 创建复用认证 Client 与根地址的 COPY Builder。
     pub fn copy(&self) -> CopyBuilder {
         CopyBuilder::new(self.client.clone(), self.base_url.clone())
+    }
+
+    /// 创建复用认证 Client 与根地址的 MOVE Builder。
+    ///
+    /// 入口名是 `mv` 而不是 `r#move`：`move` 是 Rust 关键字，作为方法名只能写成
+    /// `r#move()`，调用点很难看。模块名 `r#move` 只是实现细节。
+    ///
+    /// MOVE 成功后**源资源不再存在**，要确认结果就用 `head()` 或 `propfind()` 回查。
+    pub fn mv(&self) -> MoveBuilder {
+        MoveBuilder::new(self.client.clone(), self.base_url.clone())
     }
 }

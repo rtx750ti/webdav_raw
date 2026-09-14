@@ -22,11 +22,13 @@ mod options;
 mod propfind;
 mod put;
 
+/// `move` 是 Rust 关键字，使用原始标识符声明 WebDAV MOVE 模块。
+///
+/// 模块名不对外暴露：调用方用的是 `WebdavAuth::mv()`。
+mod r#move;
+
 // ── 尚未实现的领域 ──
 pub mod proppatch;
-
-/// `move` 是 Rust 关键字，使用原始标识符导出 WebDAV MOVE 模块。
-pub mod r#move;
 
 // ── 认证 ──
 pub use auth::{WebdavAuth, WebdavAuthError};
@@ -49,6 +51,9 @@ pub use mkcol::builder::{MkcolBuilder, MkcolError};
 
 // ── OPTIONS ──
 pub use options::builder::{OptionsBuilder, OptionsCapabilities, OptionsError};
+
+// ── MOVE ──
+pub use r#move::builder::{MoveBuilder, MoveDepth, MoveError};
 
 // ── PUT ──
 pub use put::builder::{PutBuilder, PutError};
