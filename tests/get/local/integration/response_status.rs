@@ -22,7 +22,8 @@ async fn error_statuses_return_raw_response() {
     for status in [401, 404, 500] {
         let response = auth
             .get()
-            .relative_url(format!("status-{status}"))
+            .relative_path(&format!("status-{status}"))
+            .expect("合法相对路径应被接受")
             .send()
             .await
             .expect("错误状态应仍返回响应");

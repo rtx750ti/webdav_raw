@@ -88,7 +88,8 @@ async fn empty_collection_is_gone_after_recursive_delete() {
 
     let before = auth
         .get()
-        .relative_url("empty-dir/".to_owned())
+        .relative_path("empty-dir/")
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("删除前的 GET 应发送成功");
@@ -106,7 +107,8 @@ async fn empty_collection_is_gone_after_recursive_delete() {
 
     let after = auth
         .get()
-        .relative_url("empty-dir/".to_owned())
+        .relative_path("empty-dir/")
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("删除后的 GET 应发送成功");
@@ -189,7 +191,8 @@ async fn non_empty_collection_and_its_members_are_gone_after_recursive_delete() 
     );
     assert_eq!(
         auth.get()
-            .relative_url("full-dir/".to_owned())
+            .relative_path("full-dir/")
+            .expect("合法相对路径应被接受")
             .send()
             .await
             .expect("删除前的集合 GET 应发送成功")
@@ -199,7 +202,8 @@ async fn non_empty_collection_and_its_members_are_gone_after_recursive_delete() 
     );
     assert_eq!(
         auth.get()
-            .relative_url("full-dir/inner.txt".to_owned())
+            .relative_path("full-dir/inner.txt")
+            .expect("合法相对路径应被接受")
             .send()
             .await
             .expect("删除前的成员 GET 应发送成功")
@@ -222,7 +226,8 @@ async fn non_empty_collection_and_its_members_are_gone_after_recursive_delete() 
     // 删除后：集合与成员都查不到。
     assert_eq!(
         auth.get()
-            .relative_url("full-dir/".to_owned())
+            .relative_path("full-dir/")
+            .expect("合法相对路径应被接受")
             .send()
             .await
             .expect("删除后的集合 GET 应发送成功")
@@ -232,7 +237,8 @@ async fn non_empty_collection_and_its_members_are_gone_after_recursive_delete() 
     );
     assert_eq!(
         auth.get()
-            .relative_url("full-dir/inner.txt".to_owned())
+            .relative_path("full-dir/inner.txt")
+            .expect("合法相对路径应被接受")
             .send()
             .await
             .expect("删除后的成员 GET 应发送成功")

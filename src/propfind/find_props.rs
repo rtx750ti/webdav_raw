@@ -13,6 +13,7 @@ pub enum FindProp {
     Getetag,
     Getlastmodified,
     Getcontenttype,
+    Getcontentlength,
 }
 
 impl FindProp {
@@ -23,6 +24,7 @@ impl FindProp {
             Self::Getetag => "getetag",
             Self::Getlastmodified => "getlastmodified",
             Self::Getcontenttype => "getcontenttype",
+            Self::Getcontentlength => "getcontentlength",
         }
     }
 

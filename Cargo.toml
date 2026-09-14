@@ -75,6 +75,10 @@ name = "move"
 path = "tests/move/mod.rs"
 
 [[test]]
+name = "workflow"
+path = "tests/workflow/mod.rs"
+
+[[test]]
 name = "propfind"
 path = "tests/propfind/mod.rs"
 

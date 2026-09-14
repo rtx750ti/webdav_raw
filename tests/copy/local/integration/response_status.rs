@@ -116,21 +116,22 @@ async fn multi_status_is_deserialized() {
     );
 }
 
-/// 服务端省略 `<prop>` 时，整个响应解析失败——这是已验证的已知限制。
+/// 服务端省略 `<prop>` 时也能解析：`href` 与状态码都要能拿到。
 ///
-/// 反序列化复用 `propfind` 领域的 [`MultiStatus`]，它的 `propstat.prop` 是必填
-/// 字段。本库不为此另写一套解析器（那会形成两套 `MultiStatus` 语义），因此把
-/// 真实行为固定在这里：这种响应要用 `send()` 拿原始响应自行处理。
+/// 反序列化复用 `propfind` 领域的 [`MultiStatus`]。`propstat.prop` 现在有
+/// `#[serde(default)]`，因此只给 `<status>` 的失败项不会再让整份响应解析失败。
+///
+/// 这条用例曾经断言「解析应失败」，是当时的真实行为；补上默认值后行为反转，
+/// 用例也随之改为断言解析成功且失败项可读。
 #[tokio::test]
-async fn multi_status_without_prop_element_is_reported_as_deserialization_error() {
+async fn multi_status_without_prop_element_is_still_parseable() {
     let server = local_http::start_server().await;
-    // 同一个路径会被请求两次：一次走解析入口，一次走原始入口。
     Mock::given(method("COPY"))
         .and(path("/dav/dir/"))
         .respond_with(
             ResponseTemplate::new(207).set_body_string(MULTI_STATUS_WITHOUT_PROP_BODY),
         )
-        .expect(2)
+        .expect(1)
         .mount(&server)
         .await;
     let auth = WebdavAuth::new(
@@ -140,7 +141,7 @@ async fn multi_status_without_prop_element_is_reported_as_deserialization_error(
     )
     .expect("回环地址应创建认证对象");
 
-    let error = auth
+    let multistatus = auth
         .copy()
         .source_path("dir/")
         .expect("合法相对路径应被接受")
@@ -148,28 +149,18 @@ async fn multi_status_without_prop_element_is_reported_as_deserialization_error(
         .expect("合法相对路径应被接受")
         .send_and_deserialize()
         .await
-        .expect_err("缺 <prop> 时应报反序列化错误");
+        .expect("缺 <prop> 的 207 也应能解析");
 
+    let response = multistatus
+        .response
+        .front()
+        .expect("应保留失败条目");
+    assert_eq!(response.href, "/dav/dir/locked.txt");
+    let propstat = response.propstat.first().expect("应有一条 propstat");
+    assert_eq!(propstat.status, "HTTP/1.1 423 Locked");
     assert!(
-        matches!(error, CopyError::De(_)),
-        "应为 De 错误，实际: {error:?}"
-    );
-
-    // 原始入口仍然可用：`href` 与状态码都在响应体里，调用方能自己读。
-    let raw = auth
-        .copy()
-        .source_path("dir/")
-        .expect("合法相对路径应被接受")
-        .target_path("dir-copy/")
-        .expect("合法相对路径应被接受")
-        .send()
-        .await
-        .expect("原始入口应发送成功");
-    assert_eq!(raw.status(), 207);
-    let body = raw.text().await.expect("响应体应可读");
-    assert!(
-        body.contains("423 Locked"),
-        "状态码信息应仍可从原始响应体取到"
+        propstat.prop.etag.is_none() && propstat.prop.resource_type.is_none(),
+        "省略 <prop> 时属性应全为空"
     );
 }
 

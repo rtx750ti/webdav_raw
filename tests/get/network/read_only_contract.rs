@@ -15,7 +15,8 @@ async fn download_existing_returns_status_and_content_length() {
 
     let response = auth
         .get()
-        .relative_url(EXISTING_FILE.to_owned())
+        .relative_path(EXISTING_FILE)
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("下载请求应发送成功");
@@ -39,7 +40,8 @@ async fn download_missing_returns_non_success_status() {
 
     let response = auth
         .get()
-        .relative_url("__webdav_core_missing_file__".to_owned())
+        .relative_path("__webdav_core_missing_file__")
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("请求应返回原始响应");
@@ -57,7 +59,8 @@ async fn download_wrong_auth_returns_auth_failure_status() {
 
     let response = auth
         .get()
-        .relative_url(EXISTING_FILE.to_owned())
+        .relative_path(EXISTING_FILE)
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("请求应返回原始响应");

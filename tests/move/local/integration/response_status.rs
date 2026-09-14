@@ -139,9 +139,12 @@ async fn non_multi_status_returns_unexpected_status() {
     }
 }
 
-/// 服务端省略 `<prop>` 时，整个响应解析失败——与 COPY 相同的已知限制。
+/// 服务端省略 `<prop>` 时也能解析：`href` 与状态码都要能拿到。
+///
+/// `propstat.prop` 现在有 `#[serde(default)]`，与 COPY 侧同源修复。
+/// 这条用例曾经断言「解析应失败」，补上默认值后行为反转。
 #[tokio::test]
-async fn multi_status_without_prop_element_is_reported_as_deserialization_error() {
+async fn multi_status_without_prop_element_is_still_parseable() {
     let server = local_http::start_server().await;
     Mock::given(method("MOVE"))
         .and(path("/dav/dir/"))
@@ -158,7 +161,7 @@ async fn multi_status_without_prop_element_is_reported_as_deserialization_error(
     )
     .expect("回环地址应创建认证对象");
 
-    let error = auth
+    let multistatus = auth
         .mv()
         .move_from_path("dir/")
         .expect("合法相对路径应被接受")
@@ -166,11 +169,15 @@ async fn multi_status_without_prop_element_is_reported_as_deserialization_error(
         .expect("合法相对路径应被接受")
         .send_and_deserialize()
         .await
-        .expect_err("缺 <prop> 时应报反序列化错误");
+        .expect("缺 <prop> 的 207 也应能解析");
 
+    let response = multistatus.response.front().expect("应保留失败条目");
+    assert_eq!(response.href, "/dav/dir/locked.txt");
+    let propstat = response.propstat.first().expect("应有一条 propstat");
+    assert_eq!(propstat.status, "HTTP/1.1 423 Locked");
     assert!(
-        matches!(error, MoveError::De(_)),
-        "应为 De 错误，实际: {error:?}"
+        propstat.prop.etag.is_none() && propstat.prop.resource_type.is_none(),
+        "省略 <prop> 时属性应全为空"
     );
 }
 

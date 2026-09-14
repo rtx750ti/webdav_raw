@@ -5,6 +5,9 @@ use url::Url;
 /// GET Builder 错误。
 #[derive(Debug, Error)]
 pub enum GetError {
+    #[error("URL 格式错误: {0}")]
+    Url(#[from] url::ParseError),
+
     #[error("构建 HTTP 请求失败: {0}")]
     Request(#[from] reqwest::Error),
 }
@@ -26,20 +29,57 @@ impl GetBuilder {
     }
 
     /// 用相对路径来设置当前请求地址
-    pub fn relative_url(mut self, relative_path: String) -> Self {
-        let joined = self
-            .base_url
-            .join(relative_path.as_ref())
-            .expect("无效的相对路径，请确保路径格式正确");
-        self.absolute_url = joined;
-        self
+    ///
+    /// 路径里的空格和中文会被百分号编码。以 `/` 开头会从域名根开始解析，
+    /// 覆盖掉根地址中已有的路径前缀；传入完整 URL 时直接使用该地址。
+    ///
+    /// 命名与 [`PutBuilder::relative_path`](crate::put::builder::PutBuilder::relative_path)
+    /// 一致：两者都是「相对认证根的地址」。
+    ///
+    /// # Errors
+    ///
+    /// 路径语法非法（例如 `http://[::1`）时返回 [`GetError::Url`]，**不会 panic**。
+    /// 空字符串与普通路径都是合法输入。
+    ///
+    /// ```
+    /// use webdav_core::{Client, GetBuilder, Url};
+    ///
+    /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// let builder = GetBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
+    /// let builder = builder.relative_path("目录/报告 1.pdf")?;
+    /// # let _ = builder;
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn relative_path(mut self, relative_path: &str) -> Result<Self, GetError> {
+        self.absolute_url = self.base_url.join(relative_path)?;
+
+        Ok(self)
     }
 
-    /// 用绝对路径来设置当前请求地址
-    pub fn absolute_url(mut self, absolute_url: String) -> Self {
-        let parsed = Url::parse(absolute_url.as_ref()).expect("无效的绝对 URL");
-        self.absolute_url = parsed;
-        self
+    /// 用完整 URL 来设置当前请求地址
+    ///
+    /// 命名与 [`PutBuilder::absolute_path`](crate::put::builder::PutBuilder::absolute_path)
+    /// 一致。
+    ///
+    /// # Errors
+    ///
+    /// URL 语法非法时返回 [`GetError::Url`]，**不会 panic**。
+    ///
+    /// ```
+    /// use webdav_core::{Client, GetBuilder, Url};
+    ///
+    /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// let builder = GetBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
+    /// let builder = builder.absolute_path("https://cdn.example.com/file.bin")?;
+    /// # let _ = builder;
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn absolute_path(mut self, absolute_url: &str) -> Result<Self, GetError> {
+        self.absolute_url = Url::parse(absolute_url)?;
+
+        Ok(self)
     }
 
     pub fn build(&self) -> Result<Request, GetError> {

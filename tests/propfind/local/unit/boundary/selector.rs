@@ -25,6 +25,25 @@ fn selector_variants_generate_expected_xml() {
     );
 }
 
+/// 验证 `Getcontentlength` 在稳定顺序里排在最后（它是后补的变体）。
+#[test]
+fn content_length_follows_existing_properties_in_order() {
+    let selector = PropFindSelector::Props(BTreeSet::from([
+        FindProp::Getcontentlength,
+        FindProp::Getcontenttype,
+        FindProp::Resourcetype,
+    ]));
+
+    let xml = selector.to_xml().expect("XML 应生成成功");
+
+    let resourcetype = xml.find("<D:resourcetype/>").expect("属性应存在");
+    let contenttype = xml.find("<D:getcontenttype/>").expect("属性应存在");
+    let contentlength = xml.find("<D:getcontentlength/>").expect("属性应存在");
+
+    assert!(resourcetype < contenttype);
+    assert!(contenttype < contentlength);
+}
+
 /// 验证指定属性自动去重并按稳定顺序输出。
 #[test]
 fn repeated_properties_are_deduplicated_in_stable_order() {

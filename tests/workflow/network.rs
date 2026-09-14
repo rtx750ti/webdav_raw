@@ -1,4 +1,3 @@
 //! 真实 WebDAV 验收，只在启用 `network-test` 时参与编译。
 
-mod read_only_contract;
-mod media_type_properties;
+mod temp_tree;

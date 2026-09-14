@@ -17,8 +17,10 @@ fn default_target_uses_base_url() {
 #[test]
 fn later_url_setting_overrides_previous_setting() {
     let request = GetBuilder::new(client(), base_url())
-        .relative_url("first.txt".to_owned())
-        .absolute_url("https://example.com/second.txt".to_owned())
+        .relative_path("first.txt")
+        .expect("合法路径应被接受")
+        .absolute_path("https://example.com/second.txt")
+        .expect("合法路径应被接受")
         .build()
         .expect("请求应构建成功");
 

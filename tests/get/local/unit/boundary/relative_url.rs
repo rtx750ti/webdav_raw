@@ -6,7 +6,8 @@ use crate::support::fixtures::{base_url, client};
 #[test]
 fn relative_url_encodes_spaces_and_unicode() {
     let request = GetBuilder::new(client(), base_url())
-        .relative_url("我的 文档/报告.pdf".to_owned())
+        .relative_path("我的 文档/报告.pdf")
+        .expect("合法路径应被接受")
         .build()
         .expect("请求应构建成功");
 
@@ -20,11 +21,13 @@ fn relative_url_encodes_spaces_and_unicode() {
 #[test]
 fn relative_url_normalizes_dot_segments_and_preserves_repeated_slashes() {
     let normalized = GetBuilder::new(client(), base_url())
-        .relative_url("a/./b/../c".to_owned())
+        .relative_path("a/./b/../c")
+        .expect("合法路径应被接受")
         .build()
         .expect("请求应构建成功");
     let repeated = GetBuilder::new(client(), base_url())
-        .relative_url("a//b///c".to_owned())
+        .relative_path("a//b///c")
+        .expect("合法路径应被接受")
         .build()
         .expect("请求应构建成功");
 
@@ -36,7 +39,8 @@ fn relative_url_normalizes_dot_segments_and_preserves_repeated_slashes() {
 #[test]
 fn leading_slash_relative_url_replaces_base_path() {
     let request = GetBuilder::new(client(), base_url())
-        .relative_url("/other/file.txt".to_owned())
+        .relative_path("/other/file.txt")
+        .expect("合法路径应被接受")
         .build()
         .expect("请求应构建成功");
 

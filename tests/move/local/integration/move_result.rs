@@ -125,7 +125,8 @@ async fn source_disappears_and_target_appears_after_move() {
     // 移动前：源在、目标不在。
     assert_eq!(
         auth.get()
-            .relative_url("staging/report.pdf".to_owned())
+            .relative_path("staging/report.pdf")
+            .expect("合法相对路径应被接受")
             .send()
             .await
             .expect("GET 应发送成功")
@@ -135,7 +136,8 @@ async fn source_disappears_and_target_appears_after_move() {
     );
     assert_eq!(
         auth.get()
-            .relative_url("archive/report.pdf".to_owned())
+            .relative_path("archive/report.pdf")
+            .expect("合法相对路径应被接受")
             .send()
             .await
             .expect("GET 应发送成功")
@@ -158,7 +160,8 @@ async fn source_disappears_and_target_appears_after_move() {
     // 移动后：源消失、目标出现。
     assert_eq!(
         auth.get()
-            .relative_url("staging/report.pdf".to_owned())
+            .relative_path("staging/report.pdf")
+            .expect("合法相对路径应被接受")
             .send()
             .await
             .expect("GET 应发送成功")
@@ -168,7 +171,8 @@ async fn source_disappears_and_target_appears_after_move() {
     );
     assert_eq!(
         auth.get()
-            .relative_url("archive/report.pdf".to_owned())
+            .relative_path("archive/report.pdf")
+            .expect("合法相对路径应被接受")
             .send()
             .await
             .expect("GET 应发送成功")
@@ -239,7 +243,8 @@ async fn rename_within_same_collection_moves_the_file() {
 
     assert_eq!(
         auth.get()
-            .relative_url("draft.txt".to_owned())
+            .relative_path("draft.txt")
+            .expect("合法相对路径应被接受")
             .send()
             .await
             .expect("GET 应发送成功")
@@ -249,7 +254,8 @@ async fn rename_within_same_collection_moves_the_file() {
     );
     assert_eq!(
         auth.get()
-            .relative_url("final.txt".to_owned())
+            .relative_path("final.txt")
+            .expect("合法相对路径应被接受")
             .send()
             .await
             .expect("GET 应发送成功")
@@ -300,7 +306,8 @@ async fn moving_a_missing_source_leaves_state_untouched() {
     assert_eq!(response.status(), 404);
     assert_eq!(
         auth.get()
-            .relative_url("target.txt".to_owned())
+            .relative_path("target.txt")
+            .expect("合法相对路径应被接受")
             .send()
             .await
             .expect("GET 应发送成功")

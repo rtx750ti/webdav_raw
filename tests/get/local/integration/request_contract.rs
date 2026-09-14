@@ -39,7 +39,8 @@ async fn relative_get_preserves_auth_root_path() {
 
     let response = auth
         .get()
-        .relative_url("Documents/report.txt".to_owned())
+        .relative_path("Documents/report.txt")
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("请求应发送成功");

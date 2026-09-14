@@ -23,7 +23,8 @@ async fn success_response_preserves_status_headers_and_body() {
 
     let response = auth
         .get()
-        .relative_url("file.txt".to_owned())
+        .relative_path("file.txt")
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("请求应发送成功");

@@ -13,7 +13,25 @@ fn request_body(builder: PropFindBuilder) -> String {
         .to_owned()
 }
 
-/// 验证三种属性选择器序列化为预期的 PROPFIND XML。
+/// 验证 `Getcontentlength` 能生成协议里的 `getcontentlength` 元素。
+///
+/// 这个属性是后来补上的：在此之前按名请求的长度属性根本发不出去，只能靠 `allprop`
+/// 顺带拿回长度。用例把它固定在请求 XML 层。
+#[test]
+fn content_length_property_serializes_to_protocol_xml() {
+    let base_url = Url::parse("https://example.com/dav/").expect("固定地址必须有效");
+    let props = request_body(PropFindBuilder::new(Client::new(), base_url).selector(
+        PropFindSelector::Props(BTreeSet::from([
+            FindProp::Resourcetype,
+            FindProp::Getcontentlength,
+        ])),
+    ));
+
+    assert_eq!(
+        props,
+        r#"<D:propfind xmlns:D="DAV:"><D:prop><D:resourcetype/><D:getcontentlength/></D:prop></D:propfind>"#
+    );
+}
 #[test]
 fn request_selectors_serialize_to_protocol_xml() {
     let base_url = Url::parse("https://example.com/dav/").expect("固定地址必须有效");

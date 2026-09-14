@@ -23,7 +23,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ---------- 3. 获取 GetBuilder，设置路径并发送请求 ----------
     let response = auth
         .get()
-        .relative_url(remote_path.to_string())
+        .relative_path(remote_path)?
         .send()
         .await?;
 

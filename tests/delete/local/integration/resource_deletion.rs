@@ -63,7 +63,8 @@ async fn deleted_file_is_no_longer_reachable() {
 
     let before = auth
         .get()
-        .relative_url("doomed.txt".to_owned())
+        .relative_path("doomed.txt")
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("删除前的 GET 应发送成功");
@@ -81,7 +82,8 @@ async fn deleted_file_is_no_longer_reachable() {
 
     let after = auth
         .get()
-        .relative_url("doomed.txt".to_owned())
+        .relative_path("doomed.txt")
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("删除后的 GET 应发送成功");

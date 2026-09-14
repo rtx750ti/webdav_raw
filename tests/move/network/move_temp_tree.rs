@@ -110,7 +110,8 @@ async fn moved_file_leaves_source_and_appears_at_target() {
     // 4. 内容应随资源一起搬过去。
     let fetched = auth
         .get()
-        .relative_url(target.clone())
+        .relative_path(&target)
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("读取目标文件应成功");
@@ -177,7 +178,8 @@ async fn move_without_overwrite_refuses_existing_target() {
     // 目标内容必须没变，源必须还在。
     let fetched = auth
         .get()
-        .relative_url(target.clone())
+        .relative_path(&target)
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("读取目标文件应成功");

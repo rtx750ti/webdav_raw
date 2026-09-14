@@ -113,7 +113,8 @@ const DECLARED_CONTENT_TYPE: &str = "application/x-custom";
 async fn read_back(auth: &WebdavAuth, resource: &str, step: &str) -> Vec<u8> {
     let response = auth
         .get()
-        .relative_url(resource.to_owned())
+        .relative_path(resource)
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("读回资源必须发送成功");

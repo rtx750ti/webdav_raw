@@ -87,7 +87,8 @@ async fn copied_file_has_identical_bytes_then_cleaned_up() {
     // 3. 用 GET 逐字节核对目标内容。
     let fetched = auth
         .get()
-        .relative_url(target.clone())
+        .relative_path(&target)
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("读取目标文件应成功");
@@ -172,7 +173,8 @@ async fn copy_without_overwrite_refuses_existing_target() {
     // 核对目标内容没有被改动。
     let fetched = auth
         .get()
-        .relative_url(target.clone())
+        .relative_path(&target)
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("读取目标文件应成功");

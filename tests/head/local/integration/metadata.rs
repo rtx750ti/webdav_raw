@@ -128,7 +128,8 @@ async fn head_and_get_agree_on_headers_but_differ_on_body() {
 
     let get_response = auth
         .get()
-        .relative_url("same.txt".to_owned())
+        .relative_path("same.txt")
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("GET 应发送成功");

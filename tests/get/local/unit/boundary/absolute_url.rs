@@ -6,7 +6,8 @@ use crate::support::fixtures::{base_url, client};
 #[test]
 fn absolute_url_replaces_base_url() {
     let request = GetBuilder::new(client(), base_url())
-        .absolute_url("https://download.example.com/file.txt".to_owned())
+        .absolute_path("https://download.example.com/file.txt")
+        .expect("合法路径应被接受")
         .build()
         .expect("请求应构建成功");
 
@@ -20,7 +21,8 @@ fn absolute_url_replaces_base_url() {
 #[test]
 fn absolute_url_preserves_non_standard_port() {
     let request = GetBuilder::new(client(), base_url())
-        .absolute_url("https://download.example.com:8443/file.txt".to_owned())
+        .absolute_path("https://download.example.com:8443/file.txt")
+        .expect("合法路径应被接受")
         .build()
         .expect("请求应构建成功");
 

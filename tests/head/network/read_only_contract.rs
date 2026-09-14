@@ -48,7 +48,8 @@ async fn head_reports_metadata_consistent_with_get() {
 
     let get_response = auth
         .get()
-        .relative_url(EXISTING_FILE.to_owned())
+        .relative_path(EXISTING_FILE)
+        .expect("合法相对路径应被接受")
         .send()
         .await
         .expect("GET 应发送成功");
