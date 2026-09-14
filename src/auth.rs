@@ -9,6 +9,7 @@ use sha2::{Digest, Sha256};
 use url::Url;
 
 use crate::delete::builder::DeleteBuilder;
+use crate::head::builder::HeadBuilder;
 use crate::put::builder::PutBuilder;
 use crate::{get::builder::GetBuilder, propfind::builder::PropFindBuilder};
 
@@ -267,5 +268,10 @@ impl WebdavAuth {
     /// 创建复用认证 Client 与根地址的 DELETE Builder。
     pub fn delete(&self) -> DeleteBuilder {
         DeleteBuilder::new(self.client.clone(), self.base_url.clone())
+    }
+
+    /// 创建复用认证 Client 与根地址的 HEAD Builder。
+    pub fn head(&self) -> HeadBuilder {
+        HeadBuilder::new(self.client.clone(), self.base_url.clone())
     }
 }
