@@ -118,11 +118,12 @@ async fn moved_file_leaves_source_and_appears_at_target() {
     assert_eq!(fetched_body, content, "移动后内容应与源一致");
 
     // 5. 清理：只删自己造的那个文件。
+    // 用 `DeleteDepth::Infinity`：验收服务器对 `Depth: 0` 的 DELETE 会拒。
     let removed = auth
         .delete()
         .target_path(&target)
         .expect("相对路径应被接受")
-        .depth(DeleteDepth::Zero)
+        .depth(DeleteDepth::Infinity)
         .send()
         .await
         .expect("清理用的 DELETE 应发送成功");
@@ -203,7 +204,7 @@ async fn move_without_overwrite_refuses_existing_target() {
             .delete()
             .target_path(path)
             .expect("相对路径应被接受")
-            .depth(DeleteDepth::Zero)
+            .depth(DeleteDepth::Infinity)
             .send()
             .await
             .expect("清理用的 DELETE 应发送成功");

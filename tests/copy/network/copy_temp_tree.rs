@@ -110,12 +110,13 @@ async fn copied_file_has_identical_bytes_then_cleaned_up() {
     );
 
     // 5. 清理：只删自己造的两个文件。
+    // 用 `DeleteDepth::Infinity`：验收服务器对 `Depth: 0` 的 DELETE 会拒。
     for path in [&target, &source] {
         let removed = auth
             .delete()
             .target_path(path)
             .expect("相对路径应被接受")
-            .depth(DeleteDepth::Zero)
+            .depth(DeleteDepth::Infinity)
             .send()
             .await
             .expect("清理用的 DELETE 应发送成功");
@@ -183,7 +184,7 @@ async fn copy_without_overwrite_refuses_existing_target() {
             .delete()
             .target_path(path)
             .expect("相对路径应被接受")
-            .depth(DeleteDepth::Zero)
+            .depth(DeleteDepth::Infinity)
             .send()
             .await
             .expect("清理用的 DELETE 应发送成功");

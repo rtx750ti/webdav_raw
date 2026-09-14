@@ -19,7 +19,7 @@
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use webdav_core::{DeleteDepth, FindProp, WebdavAuth};
+use webdav_core::{DeleteDepth, Depth, FindProp, WebdavAuth};
 
 use crate::common::network_config;
 
@@ -58,9 +58,14 @@ async fn created_collection_is_visible_then_cleaned_up() {
     );
 
     // 用服务端自己的记录核对：这一层确实是集合。
+    //
+    // 这里显式用 `Depth::Zero`：本项目的验收服务器（Teracloud）对根目录下的
+    // `Depth: infinity` 递归查询返回 403，只接受 `0` 与 `1`。核对单个集合本身
+    // 只需要 `0`，因此不受该策略影响。
     let listing = auth
         .propfind()
         .path(&name)
+        .depth(Depth::Zero)
         .props([FindProp::Resourcetype])
         .send_and_deserialize()
         .await
@@ -68,7 +73,7 @@ async fn created_collection_is_visible_then_cleaned_up() {
     assert_eq!(listing.response.len(), 1, "刚创建的集合应只有自身一项");
     let is_collection = listing
         .response
-        .first()
+        .front()
         .and_then(|item| item.propstat.first())
         .and_then(|propstat| propstat.prop.resource_type.as_ref())
         .and_then(|resource_type| resource_type.is_collection.as_ref())
@@ -90,11 +95,14 @@ async fn created_collection_is_visible_then_cleaned_up() {
     );
 
     // 清理：只删自己刚建的那一层。
+    //
+    // 用 `DeleteDepth::Infinity`：本项目的验收服务器（Teracloud）对集合的
+    // `Depth: 0` 删除返回 400，无限深度删除正常返回 204。
     let removed = auth
         .delete()
         .target_path(&name)
         .expect("相对路径应被接受")
-        .depth(DeleteDepth::Zero)
+        .depth(DeleteDepth::Infinity)
         .send()
         .await
         .expect("清理用的 DELETE 应发送成功");
