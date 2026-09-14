@@ -17,12 +17,12 @@ mod delete;
 mod get;
 mod head;
 mod mkcol;
+mod options;
 mod propfind;
 mod put;
 
 // ── 尚未实现的领域 ──
 pub mod copy;
-pub mod options;
 pub mod proppatch;
 
 /// `move` 是 Rust 关键字，使用原始标识符导出 WebDAV MOVE 模块。
@@ -42,6 +42,9 @@ pub use head::builder::{HeadBuilder, HeadError};
 
 // ── MKCOL ──
 pub use mkcol::builder::{MkcolBuilder, MkcolError};
+
+// ── OPTIONS ──
+pub use options::builder::{OptionsBuilder, OptionsCapabilities, OptionsError};
 
 // ── PUT ──
 pub use put::builder::{PutBuilder, PutError};

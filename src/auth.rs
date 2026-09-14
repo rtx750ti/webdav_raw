@@ -11,6 +11,7 @@ use url::Url;
 use crate::delete::builder::DeleteBuilder;
 use crate::head::builder::HeadBuilder;
 use crate::mkcol::builder::MkcolBuilder;
+use crate::options::builder::OptionsBuilder;
 use crate::put::builder::PutBuilder;
 use crate::{get::builder::GetBuilder, propfind::builder::PropFindBuilder};
 
@@ -279,5 +280,10 @@ impl WebdavAuth {
     /// 创建复用认证 Client 与根地址的 MKCOL Builder。
     pub fn mkcol(&self) -> MkcolBuilder {
         MkcolBuilder::new(self.client.clone(), self.base_url.clone())
+    }
+
+    /// 创建复用认证 Client 与根地址的 OPTIONS Builder。
+    pub fn options(&self) -> OptionsBuilder {
+        OptionsBuilder::new(self.client.clone(), self.base_url.clone())
     }
 }

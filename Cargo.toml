@@ -63,6 +63,10 @@ name = "mkcol"
 path = "tests/mkcol/mod.rs"
 
 [[test]]
+name = "options"
+path = "tests/options/mod.rs"
+
+[[test]]
 name = "propfind"
 path = "tests/propfind/mod.rs"
 
