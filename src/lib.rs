@@ -16,12 +16,12 @@ mod auth;
 mod delete;
 mod get;
 mod head;
+mod mkcol;
 mod propfind;
 mod put;
 
 // ── 尚未实现的领域 ──
 pub mod copy;
-pub mod mkcol;
 pub mod options;
 pub mod proppatch;
 
@@ -39,6 +39,9 @@ pub use delete::builder::{DeleteBuilder, DeleteDepth, DeleteError};
 
 // ── HEAD ──
 pub use head::builder::{HeadBuilder, HeadError};
+
+// ── MKCOL ──
+pub use mkcol::builder::{MkcolBuilder, MkcolError};
 
 // ── PUT ──
 pub use put::builder::{PutBuilder, PutError};

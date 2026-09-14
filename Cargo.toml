@@ -59,6 +59,10 @@ name = "head"
 path = "tests/head/mod.rs"
 
 [[test]]
+name = "mkcol"
+path = "tests/mkcol/mod.rs"
+
+[[test]]
 name = "propfind"
 path = "tests/propfind/mod.rs"
 
