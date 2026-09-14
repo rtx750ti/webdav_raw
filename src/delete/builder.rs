@@ -102,7 +102,7 @@ impl DeleteBuilder {
     /// 用相对路径设置目标地址，相对认证根地址解析。
     ///
     /// 路径里的空格和中文会被百分号编码。以 `/` 开头会从域名根开始解析，
-    /// 覆盖掉根地址中已有的路径前缀。
+    /// 覆盖掉根地址中已有的路径前缀；传入完整 URL 时直接使用该地址。
     ///
     /// ```
     /// use webdav_core::{Client, DeleteBuilder, Url};
@@ -113,11 +113,7 @@ impl DeleteBuilder {
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     pub fn target_path(mut self, path: &str) -> Result<Self, DeleteError> {
-        // 相对路径先按相对 URL 规则校验，再交给 `Url::join` 解析：
-        // `join` 遇到 `http:foo` 这类写成 scheme 的输入会把整段替换掉，
-        // 显式校验能保证「相对路径」这一参数名不会被误解。
-        let relative = Url::parse(path)?;
-        self.target_path = self.base_url.join(relative.as_str())?;
+        self.target_path = self.base_url.join(path)?;
 
         Ok(self)
     }

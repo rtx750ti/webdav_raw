@@ -51,6 +51,10 @@ name = "get"
 path = "tests/get/mod.rs"
 
 [[test]]
+name = "delete"
+path = "tests/delete/mod.rs"
+
+[[test]]
 name = "propfind"
 path = "tests/propfind/mod.rs"
 
