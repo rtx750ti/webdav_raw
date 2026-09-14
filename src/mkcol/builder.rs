@@ -9,7 +9,7 @@
 //! 不拦 `ftp://` 相同：不和服务端造两套规则，服务端自己会回 415。
 
 use reqwest::{
-    Client, Method, Request, Response,
+    Body, Client, Method, Request, Response,
     header::{CONTENT_TYPE, HeaderMap, HeaderName, HeaderValue},
 };
 use thiserror::Error;
@@ -190,7 +190,7 @@ impl MkcolBuilder {
         Ok(client
             .request(method, target_path)
             .headers(headers)
-            .body(body)
+            .body(Body::from(body))
             .build()?)
     }
 

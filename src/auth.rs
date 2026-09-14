@@ -8,6 +8,7 @@ use reqwest::{
 use sha2::{Digest, Sha256};
 use url::Url;
 
+use crate::copy::builder::CopyBuilder;
 use crate::delete::builder::DeleteBuilder;
 use crate::head::builder::HeadBuilder;
 use crate::mkcol::builder::MkcolBuilder;
@@ -285,5 +286,10 @@ impl WebdavAuth {
     /// 创建复用认证 Client 与根地址的 OPTIONS Builder。
     pub fn options(&self) -> OptionsBuilder {
         OptionsBuilder::new(self.client.clone(), self.base_url.clone())
+    }
+
+    /// 创建复用认证 Client 与根地址的 COPY Builder。
+    pub fn copy(&self) -> CopyBuilder {
+        CopyBuilder::new(self.client.clone(), self.base_url.clone())
     }
 }

@@ -13,6 +13,7 @@
 
 // ── 已实现领域：模块私有，只经下方再导出对外 ──
 mod auth;
+mod copy;
 mod delete;
 mod get;
 mod head;
@@ -22,7 +23,6 @@ mod propfind;
 mod put;
 
 // ── 尚未实现的领域 ──
-pub mod copy;
 pub mod proppatch;
 
 /// `move` 是 Rust 关键字，使用原始标识符导出 WebDAV MOVE 模块。
@@ -36,6 +36,10 @@ pub use get::builder::{GetBuilder, GetError};
 
 // ── DELETE ──
 pub use delete::builder::{DeleteBuilder, DeleteDepth, DeleteError};
+
+// ── COPY ──
+pub use copy::builder::{CopyBuilder, CopyDepth, CopyError};
+pub use copy::overwrite::Overwrite;
 
 // ── HEAD ──
 pub use head::builder::{HeadBuilder, HeadError};
