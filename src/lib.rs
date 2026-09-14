@@ -27,9 +27,6 @@ mod put;
 /// 模块名不对外暴露：调用方用的是 `WebdavAuth::mv()`。
 mod r#move;
 
-// ── 尚未实现的领域 ──
-pub mod proppatch;
-
 // ── 认证 ──
 pub use auth::{WebdavAuth, WebdavAuthError};
 
