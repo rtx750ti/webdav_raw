@@ -67,6 +67,7 @@ pub use propfind::raw_xml::multistatus::MultiStatus;
 pub use propfind::raw_xml::prop::Prop;
 pub use propfind::raw_xml::propstat::PropStat;
 pub use propfind::raw_xml::resourcetype::{EmptyElement, ResourceType};
+pub use propfind::raw_xml::supportedlock::{LockEntry, LockScope, LockType, SupportedLock};
 
 /// XML `<response>` 元素。
 ///

@@ -3,6 +3,7 @@ use mime::Mime;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::propfind::raw_xml::resourcetype::ResourceType;
+use crate::propfind::raw_xml::supportedlock::SupportedLock;
 
 /// 对应 `<D:prop>` 节点，列出资源的所有属性
 ///
@@ -64,6 +65,21 @@ pub struct Prop {
     /// `<owner>`：资源所有者（例如邮箱账号）
     #[serde(deserialize_with = "de_non_empty_string", default)]
     pub owner: Option<String>,
+
+    /// `<supportedlock>`：这个资源支持哪些锁。
+    #[serde(rename = "supportedlock", default)]
+    pub supported_lock: Option<SupportedLock>,
+
+    /// `<executable>`：Apache 的私有扩展，取值为 `T` / `F`。
+    ///
+    /// 它挂在 `http://apache.org/dav/props/` 命名空间下，不是 WebDAV 标准属性，别的
+    /// 服务端一般不给。这里照原样收着：调用方没有别的途径看到它。
+    #[serde(
+        rename = "executable",
+        deserialize_with = "de_non_empty_string",
+        default
+    )]
+    pub executable: Option<String>,
     // current-user-privilege-set属性可按需设计，暂时不用
 }
 
