@@ -9,7 +9,7 @@ fn fixtures_preserve_href_type_length_date_mime_etag_and_order() {
     let second = parse_fixture(RAW_RESULT_2);
     let root = first.response.front().expect("第一份固件应包含根资源");
     let file = first.response.get(2).expect("第一份固件应包含文件资源");
-    let decoded_folder = first.response.get(3).expect("第一份固件应包含中文目录");
+    let encoded_folder = first.response.get(3).expect("第一份固件应包含中文目录");
     let file_prop = &file.propstat.first().expect("文件应有属性状态").prop;
     let root_prop = &root.propstat.first().expect("根资源应有属性状态").prop;
 
@@ -45,7 +45,11 @@ fn fixtures_preserve_href_type_length_date_mime_etag_and_order() {
     );
     assert_eq!(file_prop.etag.as_deref(), Some("\"c-63c79387773b2\""));
     assert!(file_prop.last_modified.is_some());
-    assert_eq!(decoded_folder.href, "/dav/测试文件夹/");
+    // href 按固件原文保留，不做百分号解码，因此这里就是服务端发来的编码形式。
+    assert_eq!(
+        encoded_folder.href,
+        "/dav/%e6%b5%8b%e8%af%95%e6%96%87%e4%bb%b6%e5%a4%b9/"
+    );
 }
 
 /// 验证非法日期和非法内容长度会让 XML 反序列化返回错误。

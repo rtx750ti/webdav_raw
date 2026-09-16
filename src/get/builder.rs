@@ -1,4 +1,7 @@
-use reqwest::{Client, Request, Response};
+use reqwest::{
+    Client, Request, Response,
+    header::{HeaderMap, HeaderName, HeaderValue, RANGE},
+};
 use thiserror::Error;
 use url::Url;
 
@@ -8,14 +11,31 @@ pub enum GetError {
     #[error("URL 格式错误: {0}")]
     Url(#[from] url::ParseError),
 
+    #[error("请求头名称格式错误: {0}")]
+    HeaderName(#[from] reqwest::header::InvalidHeaderName),
+
+    #[error("请求头值格式错误: {0}")]
+    HeaderValue(#[from] reqwest::header::InvalidHeaderValue),
+
+    /// 按段区间不合法：起点必须不大于终点。
+    #[error("按段区间无效: 起点 {start} 大于终点 {end}")]
+    Range { start: u64, end: u64 },
+
     #[error("构建 HTTP 请求失败: {0}")]
     Request(#[from] reqwest::Error),
 }
 
+/// GET 请求构建器：构建并发送一次 GET，返回未经处理的原始响应。
+///
+/// 路径由 [`relative_path`](Self::relative_path) 或
+/// [`absolute_path`](Self::absolute_path) 设置；按段取用
+/// [`range`](Self::range)；附加请求头用 [`header`](Self::header) 与
+/// [`headers`](Self::headers)。库不维护任何分片状态。
 pub struct GetBuilder {
     client: Client,
     base_url: Url,
     absolute_url: Url,
+    headers: HeaderMap,
 }
 
 impl GetBuilder {
@@ -25,6 +45,7 @@ impl GetBuilder {
             client,
             absolute_url: base_url.clone(),
             base_url,
+            headers: HeaderMap::new(),
         }
     }
 
@@ -82,9 +103,101 @@ impl GetBuilder {
         Ok(self)
     }
 
+    /// 追加一个请求头。
+    ///
+    /// 同名请求头是**替换**语义：后设的覆盖先设的，不追加第二个同名头。
+    /// 它与 [`range`](Self::range) 写的是同一个 `Range` 头，谁后设谁生效。
+    ///
+    /// # Errors
+    ///
+    /// 请求头名称非法时返回 [`GetError::HeaderName`]，取值非法时返回
+    /// [`GetError::HeaderValue`]。
+    ///
+    /// ```
+    /// use webdav_core::{Client, GetBuilder, Url};
+    ///
+    /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// let request = GetBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?)
+    ///     .relative_path("big.bin")?
+    ///     .header("if-range", "\"83cc00-63d3371160718\"")?
+    ///     .build()?;
+    ///
+    /// assert_eq!(
+    ///     request.headers().get("if-range").unwrap(),
+    ///     "\"83cc00-63d3371160718\""
+    /// );
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn header(mut self, name: &str, value: &str) -> Result<Self, GetError> {
+        self.headers
+            .insert(HeaderName::try_from(name)?, HeaderValue::try_from(value)?);
+
+        Ok(self)
+    }
+
+    /// 批量追加请求头，优先级同 [`header`](Self::header)。
+    ///
+    /// 这个方法不返回 `Result`，是因为 `HeaderMap` 里的名称和取值在构造时就已经
+    /// 校验过，装进来的不可能非法。同名请求头同样是替换语义。
+    pub fn headers(mut self, headers: HeaderMap) -> Self {
+        self.headers.extend(headers);
+
+        self
+    }
+
+    /// 设置 `Range` 请求头，只取这一段字节。
+    ///
+    /// 起止都是**闭区间**：`range(0, 1023)` 对应 `Range: bytes=0-1023`，共 1024
+    /// 字节，与 [`U8BytesChunk`](crate::U8BytesChunk) 的区间写法一致。
+    ///
+    /// # 库不维护分片状态
+    ///
+    /// 分几段、按什么顺序发、失败怎么重试、是否带 `If-Range` 做版本校验，全部由
+    /// 调用方决定。本方法只写 `Range` 这一个头，一次调用对应一次请求。
+    ///
+    /// # 答复形态
+    ///
+    /// 服务端是否支持按段取，答案在响应里：接受时回 `206 Partial Content` 并带
+    /// `Content-Range`，忽略 `Range` 时回 `200` 加整份内容。本库不把两者分开，
+    /// 调用方按状态码判定。
+    ///
+    /// # Errors
+    ///
+    /// 起点大于终点时返回 [`GetError::Range`]。
+    ///
+    /// ```
+    /// use webdav_core::{Client, GetBuilder, Url};
+    ///
+    /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// let request = GetBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?)
+    ///     .relative_path("big.bin")?
+    ///     .range(0, 1023)?
+    ///     .build()?;
+    ///
+    /// assert_eq!(request.headers().get("range").unwrap(), "bytes=0-1023");
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn range(mut self, start: u64, end: u64) -> Result<Self, GetError> {
+        if start > end {
+            return Err(GetError::Range { start, end });
+        }
+
+        let value = HeaderValue::from_str(&format!("bytes={start}-{end}"))?;
+
+        self.headers.insert(RANGE, value);
+
+        Ok(self)
+    }
+
     pub fn build(&self) -> Result<Request, GetError> {
         let url = self.absolute_url.as_ref();
-        let request = self.client.get(url).build()?;
+        let request = self
+            .client
+            .get(url)
+            .headers(self.headers.clone())
+            .build()?;
         Ok(request)
     }
 
@@ -96,6 +209,8 @@ impl GetBuilder {
     /// - 通过 `response.headers()` 和 `response.status()` 检查元数据。
     ///
     /// 调用者可根据实际需求选择最合适的读取方式，此库不干涉任何 I/O 逻辑。
+    ///
+    /// 按段请求的答复同样原样交出，不做任何判断，见 [`range`](Self::range)。
     pub async fn send(self) -> Result<Response, GetError> {
         let request = self.build()?;
         let response = self.client.execute(request).await?;
