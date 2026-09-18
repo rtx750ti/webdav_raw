@@ -1,4 +1,4 @@
-use webdav_core::WebdavAuth;
+use webdav_raw::WebdavAuth;
 use futures_util::StreamExt;
 use tokio::io::AsyncWriteExt;
 use reqwest::header::CONTENT_LENGTH;

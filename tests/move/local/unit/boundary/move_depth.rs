@@ -1,6 +1,6 @@
 //! `MoveDepth` 协议值的边界。
 
-use webdav_core::MoveDepth;
+use webdav_raw::MoveDepth;
 
 /// 未设置时默认递归移动。
 #[test]

@@ -1,4 +1,4 @@
-use webdav_core::Url;
+use webdav_raw::Url;
 use wiremock::MockServer;
 
 /// 启动只监听本机回环地址的 HTTP MockServer。

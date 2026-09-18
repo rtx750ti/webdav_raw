@@ -92,8 +92,8 @@ impl PropFindBuilder {
     /// 推荐使用相对路径，例如：
     ///
     /// ```rust
-    /// use webdav_core::{Client, Url};
-    /// use webdav_core::PropFindBuilder;
+    /// use webdav_raw::{Client, Url};
+    /// use webdav_raw::PropFindBuilder;
     ///
     /// let base_url = Url::parse("https://example.com/webdav/").unwrap();
     /// let builder = PropFindBuilder::new(Client::new(), base_url);
@@ -139,9 +139,9 @@ impl PropFindBuilder {
     /// 示例：
     ///
     /// ```rust
-    /// use webdav_core::{Client, Url};
-    /// use webdav_core::PropFindBuilder;
-    /// use webdav_core::FindProp;
+    /// use webdav_raw::{Client, Url};
+    /// use webdav_raw::PropFindBuilder;
+    /// use webdav_raw::FindProp;
     ///
     /// let base_url = Url::parse("https://example.com/webdav/").unwrap();
     /// let builder = PropFindBuilder::new(Client::new(), base_url);

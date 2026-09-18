@@ -3,11 +3,11 @@
 //! `thiserror` 派生的 `Display::fmt` 是独立函数：只有真正格式化过错误对象才会
 //! 执行。只用 `matches!` 判断变体的用例不会执行它，因此这一族函数需要本文件补齐。
 
-use webdav_core::Client;
-use webdav_core::Url;
-use webdav_core::{PutBuilder, PutError};
-use webdav_core::{U8BytesChunk, U8BytesChunkError};
-use webdav_core::{U8BytesData, U8BytesDataError, U8BytesError, U8Metadata};
+use webdav_raw::Client;
+use webdav_raw::Url;
+use webdav_raw::{PutBuilder, PutError};
+use webdav_raw::{U8BytesChunk, U8BytesChunkError};
+use webdav_raw::{U8BytesData, U8BytesDataError, U8BytesError, U8Metadata};
 
 /// 构造基准 Builder，供路径与请求头错误复用。
 fn builder() -> PutBuilder {

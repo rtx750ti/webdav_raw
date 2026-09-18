@@ -1,6 +1,6 @@
 //! 请求体的边界：不设置、空字符串、带内容与非 ASCII 内容。
 
-use webdav_core::{MkcolBuilder, MkcolError};
+use webdav_raw::{MkcolBuilder, MkcolError};
 
 use crate::support::fixtures::{base_url, client};
 

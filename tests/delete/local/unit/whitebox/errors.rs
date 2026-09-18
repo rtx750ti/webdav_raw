@@ -1,6 +1,6 @@
 //! Builder 的错误返回分支。
 
-use webdav_core::{DeleteBuilder, DeleteError};
+use webdav_raw::{DeleteBuilder, DeleteError};
 
 use crate::support::fixtures::{base_url, client};
 
@@ -28,7 +28,7 @@ fn invalid_header_value_returns_header_value_error() {
 #[tokio::test]
 async fn send_returns_request_error_when_server_is_unreachable() {
     // 回环地址的保留端口上没有监听者。
-    let target = webdav_core::Url::parse("http://127.0.0.1:1/dav/").expect("地址必须合法");
+    let target = webdav_raw::Url::parse("http://127.0.0.1:1/dav/").expect("地址必须合法");
 
     let error = DeleteBuilder::new(client(), target)
         .send()

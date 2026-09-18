@@ -1,6 +1,6 @@
 use std::env;
 
-use webdav_core::Url;
+use webdav_raw::Url;
 
 /// 真实网络验收所需的 WebDAV 配置。
 pub struct NetworkConfig {

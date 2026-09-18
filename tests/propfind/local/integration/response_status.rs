@@ -1,5 +1,5 @@
-use webdav_core::Client;
-use webdav_core::{PropFindBuilder, PropFindError};
+use webdav_raw::Client;
+use webdav_raw::{PropFindBuilder, PropFindError};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 

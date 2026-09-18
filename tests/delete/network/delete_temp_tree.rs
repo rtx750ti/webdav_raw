@@ -24,7 +24,7 @@
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use webdav_core::{
+use webdav_raw::{
     DeleteDepth, FindProp, PutBody, U8Bytes, U8BytesData, U8Metadata, WebdavAuth,
 };
 
@@ -38,7 +38,7 @@ fn temp_collection_name() -> String {
         .as_nanos();
     let pid = std::process::id();
 
-    format!("__webdav_core_selftest_delete_{nanos}_{pid}/")
+    format!("__webdav_raw_selftest_delete_{nanos}_{pid}/")
 }
 
 /// 确认某个路径在服务端已经不存在。
@@ -49,7 +49,7 @@ async fn assert_absent(auth: &WebdavAuth, path: &str) {
     let result = auth
         .propfind()
         .path(path)
-        .depth(webdav_core::Depth::Zero)
+        .depth(webdav_raw::Depth::Zero)
         .props([FindProp::Resourcetype])
         .send_and_deserialize()
         .await;
@@ -124,7 +124,7 @@ async fn non_empty_collection_is_removed_with_its_members() {
         .expect("MKCOL 应发送成功");
     assert!(created.status().is_success());
 
-    let body = format!("webdav-core delete self-test {name}");
+    let body = format!("webdav_raw delete self-test {name}");
     let data = U8BytesData::new(body.as_bytes().to_vec(), None).expect("应构造成功");
     let metadata = U8Metadata::from_name("inner.txt".to_owned()).expect("应构造成功");
     let uploaded = auth
@@ -166,7 +166,7 @@ async fn single_file_is_removed() {
         .expect("网络测试地址应有效");
 
     let file = format!(
-        "__webdav_core_selftest_delete_file_{}_{}.txt",
+        "__webdav_raw_selftest_delete_file_{}_{}.txt",
         SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .expect("系统时间应晚于 Unix 纪元")

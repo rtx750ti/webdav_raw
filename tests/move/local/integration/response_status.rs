@@ -1,6 +1,6 @@
 //! 状态码行为：MOVE 的成功与失败码原样透传，207 可另行解析。
 
-use webdav_core::{MoveError, WebdavAuth};
+use webdav_raw::{MoveError, WebdavAuth};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 

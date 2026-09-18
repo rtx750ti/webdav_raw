@@ -1,4 +1,4 @@
-use webdav_core::{Client, Url};
+use webdav_raw::{Client, Url};
 
 /// 创建不带外部状态的 GET 测试客户端。
 pub fn client() -> Client {

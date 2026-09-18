@@ -20,7 +20,7 @@
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use webdav_core::{
+use webdav_raw::{
     DeleteDepth, Overwrite, PutBody, U8Bytes, U8BytesData, U8Metadata, WebdavAuth,
 };
 
@@ -34,7 +34,7 @@ fn temp_prefix() -> String {
         .as_nanos();
     let pid = std::process::id();
 
-    format!("__webdav_core_selftest_move_{nanos}_{pid}")
+    format!("__webdav_raw_selftest_move_{nanos}_{pid}")
 }
 
 /// 验证真实服务能移动自己造的文件：源消失、目标出现，内容一致，最后清理。
@@ -48,7 +48,7 @@ async fn moved_file_leaves_source_and_appears_at_target() {
     let prefix = temp_prefix();
     let source = format!("{prefix}-source.txt");
     let target = format!("{prefix}-target.txt");
-    let content = format!("webdav-core move self-test {prefix}");
+    let content = format!("webdav_raw move self-test {prefix}");
 
     // 1. 造源文件。
     let data = U8BytesData::new(content.as_bytes().to_vec(), None).expect("应构造成功");

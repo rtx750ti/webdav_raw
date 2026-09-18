@@ -1,4 +1,4 @@
-use webdav_core::MultiStatus;
+use webdav_raw::MultiStatus;
 
 /// 第一份真实 PROPFIND XML 固件。
 pub const RAW_RESULT_1: &str = include_str!("../../../test_files/propfind/raw_result1.xml");

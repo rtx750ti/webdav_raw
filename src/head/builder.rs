@@ -35,7 +35,7 @@ pub enum HeadError {
 /// Client 与根地址；不设置目标地址时指向根地址本身。
 ///
 /// ```
-/// use webdav_core::{Client, HeadBuilder, Url};
+/// use webdav_raw::{Client, HeadBuilder, Url};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let request = HeadBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?)
@@ -78,7 +78,7 @@ impl HeadBuilder {
     /// 覆盖掉根地址中已有的路径前缀；传入完整 URL 时直接使用该地址。
     ///
     /// ```
-    /// use webdav_core::{Client, HeadBuilder, Url};
+    /// use webdav_raw::{Client, HeadBuilder, Url};
     ///
     /// let builder = HeadBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
     /// let builder = builder.target_path("目录/报告 1.txt")?;
@@ -116,7 +116,7 @@ impl HeadBuilder {
     /// 同名请求头是**替换**语义：后设的覆盖先设的，不追加第二个同名头。
     ///
     /// ```
-    /// use webdav_core::{Client, HeadBuilder, Url};
+    /// use webdav_raw::{Client, HeadBuilder, Url};
     ///
     /// let builder = HeadBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
     /// let builder = builder.header("if-none-match", "\"v1\"")?;

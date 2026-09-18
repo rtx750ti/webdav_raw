@@ -63,7 +63,7 @@ impl GetBuilder {
     /// 空字符串与普通路径都是合法输入。
     ///
     /// ```
-    /// use webdav_core::{Client, GetBuilder, Url};
+    /// use webdav_raw::{Client, GetBuilder, Url};
     ///
     /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// let builder = GetBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
@@ -88,7 +88,7 @@ impl GetBuilder {
     /// URL 语法非法时返回 [`GetError::Url`]，**不会 panic**。
     ///
     /// ```
-    /// use webdav_core::{Client, GetBuilder, Url};
+    /// use webdav_raw::{Client, GetBuilder, Url};
     ///
     /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// let builder = GetBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
@@ -114,7 +114,7 @@ impl GetBuilder {
     /// [`GetError::HeaderValue`]。
     ///
     /// ```
-    /// use webdav_core::{Client, GetBuilder, Url};
+    /// use webdav_raw::{Client, GetBuilder, Url};
     ///
     /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// let request = GetBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?)
@@ -167,7 +167,7 @@ impl GetBuilder {
     /// 起点大于终点时返回 [`GetError::Range`]。
     ///
     /// ```
-    /// use webdav_core::{Client, GetBuilder, Url};
+    /// use webdav_raw::{Client, GetBuilder, Url};
     ///
     /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// let request = GetBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?)

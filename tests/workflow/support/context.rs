@@ -5,7 +5,7 @@
 use std::collections::BTreeSet;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use webdav_core::WebdavAuth;
+use webdav_raw::WebdavAuth;
 
 use super::dav_tree;
 use crate::common::network_config;
@@ -22,7 +22,7 @@ pub struct Ctx {
     auth: WebdavAuth,
     /// 本次运行独占的**一次性工作区**名字（不带斜杠）。
     ///
-    /// 形如 `__webdav_core_workflow_<时间戳>_<进程号>`。它建在服务器根目录下，
+    /// 形如 `__webdav_raw_workflow_<时间戳>_<进程号>`。它建在服务器根目录下，
     /// 工作流的全部内容都放在它里面；跑完整个删掉，根目录恢复原样。
     ///
     /// # 为什么要多这一层工作区

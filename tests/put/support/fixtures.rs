@@ -7,7 +7,7 @@
 
 use std::path::{Path, PathBuf};
 
-use webdav_core::{PutBody, U8Bytes, U8BytesData, U8Metadata};
+use webdav_raw::{PutBody, U8Bytes, U8BytesData, U8Metadata};
 
 /// 创建带指定内容类型的元数据。
 ///
@@ -45,7 +45,7 @@ pub fn bytes_body_with_content_type(data: impl Into<Vec<u8>>, content_type: &str
 /// 文件名带上 `tag` 与进程号，保证并行执行的测试之间互不冲突。
 pub async fn write_temp_file(tag: &str, content: &[u8]) -> PathBuf {
     let path =
-        std::env::temp_dir().join(format!("webdav_core_put_{}_{tag}.bin", std::process::id()));
+        std::env::temp_dir().join(format!("webdav_raw_put_{}_{tag}.bin", std::process::id()));
 
     tokio::fs::write(&path, content)
         .await

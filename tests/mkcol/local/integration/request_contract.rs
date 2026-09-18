@@ -1,6 +1,6 @@
 //! MKCOL 请求契约：方法、目标地址、请求体与内容类型。
 
-use webdav_core::WebdavAuth;
+use webdav_raw::WebdavAuth;
 use wiremock::matchers::{body_string, header, method, path};
 use wiremock::{Mock, ResponseTemplate};
 

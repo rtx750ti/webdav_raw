@@ -2,7 +2,7 @@
 //!
 //! 覆盖空值、单字节、空文件、空分片，以及"来源与元数据正交"这一点。
 
-use webdav_core::{FileHandle, PutBody, PutData, U8Bytes, U8BytesChunk, U8BytesData, U8Metadata};
+use webdav_raw::{FileHandle, PutBody, PutData, U8Bytes, U8BytesChunk, U8BytesData, U8Metadata};
 
 use crate::support::fixtures::{bytes_body, default_metadata, metadata, write_temp_file};
 
@@ -109,7 +109,7 @@ fn chunk_body_carries_range_but_is_still_one_source() {
 
 #[test]
 fn file_body_reports_its_own_data_field() {
-    let path = std::env::temp_dir().join("webdav_core_put_file_body_probe.bin");
+    let path = std::env::temp_dir().join("webdav_raw_put_file_body_probe.bin");
     std::fs::write(&path, b"x").expect("临时文件必须可写");
     let file = std::fs::File::open(&path).expect("临时文件必须可打开");
     let handle = FileHandle::new(tokio::fs::File::from_std(file), Some("op-1".to_owned()));

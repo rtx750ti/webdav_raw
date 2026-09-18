@@ -1,8 +1,8 @@
 use std::collections::BTreeSet;
 
-use webdav_core::PropFindBuilder;
-use webdav_core::{FindProp, PropFindSelector};
-use webdav_core::{Client, Url};
+use webdav_raw::PropFindBuilder;
+use webdav_raw::{FindProp, PropFindSelector};
+use webdav_raw::{Client, Url};
 
 /// 从 Request 中读取构建器生成的 XML 请求体。
 fn request_body(builder: PropFindBuilder) -> String {

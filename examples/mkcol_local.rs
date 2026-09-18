@@ -17,7 +17,7 @@
 //! 这里只调用 `build()`，不调用 `send()`：示例不发送任何请求，也不创建任何远端
 //! 目录，因此可以直接跑。
 
-use webdav_core::{Client, MkcolBuilder, Request, Url};
+use webdav_raw::{Client, MkcolBuilder, Request, Url};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 真实调用方用 auth.mkcol() 取 Builder，Authorization 会自动复用。

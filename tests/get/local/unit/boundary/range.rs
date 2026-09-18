@@ -4,12 +4,12 @@
 //! `u64` 最大值，以及起点大于终点时的错误返回。区间是否被服务端接受不在本文件
 //! 的范围内，那属于集成测试。
 
-use webdav_core::{GetBuilder, GetError};
+use webdav_raw::{GetBuilder, GetError};
 
 use crate::support::fixtures::{base_url, client};
 
 /// 用给定区间构建请求；失败时让用例失败。
-fn request_with_range(start: u64, end: u64) -> webdav_core::Request {
+fn request_with_range(start: u64, end: u64) -> webdav_raw::Request {
     GetBuilder::new(client(), base_url())
         .relative_path("big.bin")
         .expect("合法相对路径应被接受")

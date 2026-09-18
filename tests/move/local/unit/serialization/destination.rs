@@ -2,7 +2,7 @@
 //!
 //! MOVE 与 COPY 在这条语义上完全一致，用例也逐条对应，便于两边对照维护。
 
-use webdav_core::{MoveBuilder, Url};
+use webdav_raw::{MoveBuilder, Url};
 
 use crate::support::fixtures::{base_url, client};
 
@@ -113,7 +113,7 @@ fn target_normalizes_dot_segments_and_keeps_repeated_slashes() {
 fn destination_matches_copy_for_identical_input() {
     let target = "备份/报告 2026.pdf";
 
-    let copied = webdav_core::CopyBuilder::new(client(), base_url())
+    let copied = webdav_raw::CopyBuilder::new(client(), base_url())
         .source_path("source.pdf")
         .expect("合法相对路径应被接受")
         .target_path(target)

@@ -1,6 +1,6 @@
 //! 状态码行为：COPY 的成功与失败码原样透传，207 可另行解析。
 
-use webdav_core::{CopyError, WebdavAuth};
+use webdav_raw::{CopyError, WebdavAuth};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 
@@ -65,7 +65,7 @@ async fn precondition_failed_keeps_response_headers() {
         .expect("合法相对路径应被接受")
         .target_path("target.txt")
         .expect("合法相对路径应被接受")
-        .overwrite(webdav_core::Overwrite::False)
+        .overwrite(webdav_raw::Overwrite::False)
         .send()
         .await
         .expect("COPY 应发送成功");

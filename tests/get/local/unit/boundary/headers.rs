@@ -4,7 +4,7 @@
 //! panic。本文件固定「哪些名称和取值合法、哪些被拒」，并确认被拒的输入没有产生
 //! 任何副作用。
 
-use webdav_core::{GetBuilder, GetError};
+use webdav_raw::{GetBuilder, GetError};
 
 use crate::support::fixtures::{base_url, client};
 

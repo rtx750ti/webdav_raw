@@ -1,6 +1,6 @@
 //! `Overwrite` 协议值的边界。
 
-use webdav_core::Overwrite;
+use webdav_raw::Overwrite;
 
 /// 默认值是按 RFC 默认处理的 `True`，也就是「不发送该请求头」。
 #[test]

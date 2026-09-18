@@ -1,7 +1,7 @@
 //! 文件源的流式发送：字节、长度与请求头在真实 HTTP 链路上的表现。
 
-use webdav_core::WebdavAuth;
-use webdav_core::{FileHandle, PutBody};
+use webdav_raw::WebdavAuth;
+use webdav_raw::{FileHandle, PutBody};
 use wiremock::matchers::{header, method, path};
 use wiremock::{Mock, ResponseTemplate};
 

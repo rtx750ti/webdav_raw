@@ -65,7 +65,7 @@ impl U8Metadata {
     /// 推断结果永远是合法 MIME，因此这个入口只在文件名为空时报错。
     ///
     /// ```
-    /// use webdav_core::U8Metadata;
+    /// use webdav_raw::U8Metadata;
     ///
     /// let archive = U8Metadata::from_name("report.zip".to_owned()).unwrap();
     /// assert_eq!(archive.content_type, "application/zip");
@@ -103,7 +103,7 @@ impl U8Metadata {
     /// 与元数据是正交的两件事。
     ///
     /// ```
-    /// use webdav_core::U8Metadata;
+    /// use webdav_raw::U8Metadata;
     ///
     /// let mut metadata = U8Metadata::from_name("report.zip".to_owned()).unwrap();
     /// assert!(metadata.validate().is_ok());
@@ -154,7 +154,7 @@ impl U8Bytes {
     /// 创建完整内存二进制。
     ///
     /// ```
-    /// use webdav_core::{U8Bytes, U8BytesData, U8Metadata};
+    /// use webdav_raw::{U8Bytes, U8BytesData, U8Metadata};
     ///
     /// let data = U8BytesData::new(vec![1, 2, 3], None).unwrap();
     /// let metadata = U8Metadata::from_name("report.txt".to_owned()).unwrap();

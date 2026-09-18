@@ -1,5 +1,5 @@
-use webdav_core::WebdavAuth;
-use webdav_core::Depth;
+use webdav_raw::WebdavAuth;
+use webdav_raw::Depth;
 use wiremock::matchers::{header, method, path};
 use wiremock::{Mock, ResponseTemplate};
 

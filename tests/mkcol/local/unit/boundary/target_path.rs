@@ -1,6 +1,6 @@
 //! 目标地址设置的边界：编码、根前缀覆盖与非法输入。
 
-use webdav_core::{MkcolBuilder, MkcolError};
+use webdav_raw::{MkcolBuilder, MkcolError};
 
 use crate::support::fixtures::{base_url, client};
 

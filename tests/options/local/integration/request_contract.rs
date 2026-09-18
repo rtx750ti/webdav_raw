@@ -1,6 +1,6 @@
 //! OPTIONS 请求契约：方法、目标地址与请求头。
 
-use webdav_core::WebdavAuth;
+use webdav_raw::WebdavAuth;
 use wiremock::matchers::{header, method, path};
 use wiremock::{Mock, ResponseTemplate};
 

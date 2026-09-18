@@ -13,7 +13,7 @@
 use std::path::PathBuf;
 use std::time::Instant;
 
-use webdav_core::WebdavAuth;
+use webdav_raw::WebdavAuth;
 
 use crate::common::network_config;
 

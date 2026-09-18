@@ -65,7 +65,7 @@ impl DeleteDepth {
 /// Client 与根地址；不设置目标地址时指向根地址本身。
 ///
 /// ```
-/// use webdav_core::{Client, DeleteBuilder, DeleteDepth, Url};
+/// use webdav_raw::{Client, DeleteBuilder, DeleteDepth, Url};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let builder = DeleteBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?)
@@ -105,7 +105,7 @@ impl DeleteBuilder {
     /// 覆盖掉根地址中已有的路径前缀；传入完整 URL 时直接使用该地址。
     ///
     /// ```
-    /// use webdav_core::{Client, DeleteBuilder, Url};
+    /// use webdav_raw::{Client, DeleteBuilder, Url};
     ///
     /// let builder = DeleteBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
     /// let builder = builder.target_path("目录/报告 1.txt")?;
@@ -150,7 +150,7 @@ impl DeleteBuilder {
     /// 同名请求头是**替换**语义：后设的覆盖先设的，不追加第二个同名头。
     ///
     /// ```
-    /// use webdav_core::{Client, DeleteBuilder, Url};
+    /// use webdav_raw::{Client, DeleteBuilder, Url};
     ///
     /// let builder = DeleteBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
     /// let builder = builder.header("if-match", "\"v1\"")?;
@@ -179,7 +179,7 @@ impl DeleteBuilder {
     /// 请求体为空，本库只负责写 `Depth` 与调用方设置的请求头。
     ///
     /// ```
-    /// use webdav_core::{Client, DeleteBuilder, DeleteDepth, Url};
+    /// use webdav_raw::{Client, DeleteBuilder, DeleteDepth, Url};
     ///
     /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// let request = DeleteBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?)

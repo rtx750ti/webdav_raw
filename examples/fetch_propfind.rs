@@ -5,9 +5,9 @@ use reqwest::header::AUTHORIZATION;
 use url::Url;
 use wiremock::http::{HeaderMap, HeaderValue}; // 需要在 Cargo.toml 中添加 base64 = "0.21" // 引入 trait 才能使用 encode
 
-use webdav_core::WebdavAuth;
-use webdav_core::{Depth, PropFindBuilder};
-use webdav_core::{FindProp, PropFindSelector};
+use webdav_raw::WebdavAuth;
+use webdav_raw::{Depth, PropFindBuilder};
+use webdav_raw::{FindProp, PropFindSelector};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

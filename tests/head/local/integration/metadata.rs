@@ -3,7 +3,7 @@
 //! 这是 HEAD 唯一区别于 GET 的地方，也是它存在的意义：先问元数据，不下载内容。
 //! 这些用例把「响应头能读到」和「响应体确实是空的」两件事分别钉住。
 
-use webdav_core::WebdavAuth;
+use webdav_raw::WebdavAuth;
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 

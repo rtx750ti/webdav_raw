@@ -6,7 +6,7 @@
 
 use std::sync::{Arc, Mutex};
 
-use webdav_core::{MoveDepth, Overwrite, WebdavAuth};
+use webdav_raw::{MoveDepth, Overwrite, WebdavAuth};
 use wiremock::matchers::{header, method, path};
 use wiremock::{Mock, Request, Respond, ResponseTemplate};
 

@@ -3,7 +3,7 @@
 //! 负向用例的价值不低于正向：它验证**失败路径没有副作用**。其中 N5、N6、N8 必须核对
 //! 「既有内容一点没变」，这是最容易出错、也最容易造成真实损失的地方。
 
-use webdav_core::{Overwrite, StatusCode};
+use webdav_raw::{Overwrite, StatusCode};
 
 use super::data::{content, dir, file};
 use crate::support::context::{Ctx, step};

@@ -8,7 +8,7 @@
 use wiremock::matchers::{header, method, path};
 use wiremock::{Mock, ResponseTemplate};
 
-use webdav_core::WebdavAuth;
+use webdav_raw::WebdavAuth;
 
 use crate::common::local_http;
 

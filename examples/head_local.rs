@@ -14,7 +14,7 @@
 //! 要看真实的响应头读取，请参考 `tests/head/local/integration/metadata.rs` 与
 //! `tests/head/network/read_only_contract.rs`。
 
-use webdav_core::{Client, HeadBuilder, Request, Url};
+use webdav_raw::{Client, HeadBuilder, Request, Url};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 真实调用方用 auth.head() 取 Builder，Authorization 会自动复用。

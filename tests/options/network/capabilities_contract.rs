@@ -11,7 +11,7 @@
 //! 需要 `WEBDAV_URL`、`WEBDAV_ACCOUNT`、`WEBDAV_PASSWORD`。输出里不会出现账号、
 //! 密码或 Authorization。
 
-use webdav_core::WebdavAuth;
+use webdav_raw::WebdavAuth;
 
 use crate::common::network_config;
 

@@ -1,4 +1,4 @@
-use webdav_core::WebdavAuth;
+use webdav_raw::WebdavAuth;
 
 use crate::common::network_config;
 
@@ -40,7 +40,7 @@ async fn download_missing_returns_non_success_status() {
 
     let response = auth
         .get()
-        .relative_path("__webdav_core_missing_file__")
+        .relative_path("__webdav_raw_missing_file__")
         .expect("合法相对路径应被接受")
         .send()
         .await

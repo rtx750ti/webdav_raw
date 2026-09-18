@@ -2,8 +2,8 @@
 //!
 //! 全部经本地 MockServer 发出真实 HTTP 请求，验证公开调用链而不只是请求对象。
 
-use webdav_core::WebdavAuth;
-use webdav_core::{PutBody, U8BytesChunk, U8BytesData};
+use webdav_raw::WebdavAuth;
+use webdav_raw::{PutBody, U8BytesChunk, U8BytesData};
 use wiremock::matchers::{body_bytes, body_string, header, method, path};
 use wiremock::{Mock, ResponseTemplate};
 

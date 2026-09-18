@@ -1,6 +1,6 @@
 //! Builder 的错误返回分支。
 
-use webdav_core::{MoveBuilder, MoveError};
+use webdav_raw::{MoveBuilder, MoveError};
 
 use crate::support::fixtures::{base_url, client};
 
@@ -40,7 +40,7 @@ async fn missing_target_fails_before_any_request_is_sent() {
 /// 服务器不可达时 `send()` 返回 `Request` 错误。
 #[tokio::test]
 async fn send_returns_request_error_when_server_is_unreachable() {
-    let target = webdav_core::Url::parse("http://127.0.0.1:1/dav/").expect("地址必须合法");
+    let target = webdav_raw::Url::parse("http://127.0.0.1:1/dav/").expect("地址必须合法");
 
     let error = MoveBuilder::new(client(), target)
         .target_path("target.txt")
@@ -55,7 +55,7 @@ async fn send_returns_request_error_when_server_is_unreachable() {
 /// 不可达时 `send_and_deserialize()` 同样报 `Request` 错误。
 #[tokio::test]
 async fn send_and_deserialize_reports_send_error() {
-    let target = webdav_core::Url::parse("http://127.0.0.1:1/dav/").expect("地址必须合法");
+    let target = webdav_raw::Url::parse("http://127.0.0.1:1/dav/").expect("地址必须合法");
 
     let error = MoveBuilder::new(client(), target)
         .target_path("target.txt")

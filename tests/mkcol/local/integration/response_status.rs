@@ -8,7 +8,7 @@
 //!
 //! 本库不做这些判断，只保证状态码、响应头和响应体都能拿到。
 
-use webdav_core::WebdavAuth;
+use webdav_raw::WebdavAuth;
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 

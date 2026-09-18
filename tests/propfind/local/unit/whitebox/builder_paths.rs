@@ -1,5 +1,5 @@
-use webdav_core::{Depth, PropFindBuilder, PropFindError};
-use webdav_core::{Client, Url};
+use webdav_raw::{Depth, PropFindBuilder, PropFindError};
+use webdav_raw::{Client, Url};
 
 /// 验证 Builder 将路径、Depth、固定请求头和 PROPFIND 方法组装为请求。
 #[test]

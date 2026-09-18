@@ -3,7 +3,7 @@
 //! 这是 COPY 最核心的一条语义：请求头里的取值**不是**调用方传来的原字符串，
 //! 而是已解析 URL 的重新序列化结果。用例逐个钉住这个区别带来的行为。
 
-use webdav_core::{Client, CopyBuilder, Url};
+use webdav_raw::{Client, CopyBuilder, Url};
 
 use crate::support::fixtures::{base_url, client};
 
@@ -89,10 +89,10 @@ fn caller_destination_header_is_overridden() {
 /// 批量请求头里的 `Destination` 同样会被覆盖。
 #[test]
 fn batch_destination_header_is_overridden() {
-    let mut headers = webdav_core::HeaderMap::new();
+    let mut headers = webdav_raw::HeaderMap::new();
     headers.insert(
         "destination",
-        webdav_core::HeaderValue::from_static("https://evil.example.com/other.txt"),
+        webdav_raw::HeaderValue::from_static("https://evil.example.com/other.txt"),
     );
 
     let request = CopyBuilder::new(client(), base_url())

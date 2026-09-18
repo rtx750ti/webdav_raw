@@ -1,6 +1,6 @@
 //! Builder 的默认值、覆盖语义与请求装配。
 
-use webdav_core::{HeaderMap, HeaderValue, MoveBuilder, MoveDepth, Overwrite};
+use webdav_raw::{HeaderMap, HeaderValue, MoveBuilder, MoveDepth, Overwrite};
 
 use crate::support::fixtures::{base_url, client};
 

@@ -3,7 +3,7 @@
 //! `DAV` 与 `Allow` 的取值形态在实际服务端上差异很大：有的带空格、有的不带，
 //! 有的只声明一个级别，有的重复发送同一个头。这里把能遇到的形态逐个钉住。
 
-use webdav_core::{HeaderMap, HeaderValue, OptionsCapabilities};
+use webdav_raw::{HeaderMap, HeaderValue, OptionsCapabilities};
 
 /// 带空格的逗号分隔列表。
 #[test]

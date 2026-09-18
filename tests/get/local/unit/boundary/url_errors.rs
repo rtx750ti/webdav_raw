@@ -6,8 +6,8 @@
 //!
 //! 用 `std::panic::catch_unwind` 兜底：只要还有输入能触发 panic，用例就会失败。
 
-use webdav_core::GetBuilder;
-use webdav_core::{Client, GetError, Url};
+use webdav_raw::GetBuilder;
+use webdav_raw::{Client, GetError, Url};
 
 use crate::support::fixtures::base_url;
 

@@ -4,7 +4,7 @@
 
 use std::collections::BTreeSet;
 
-use webdav_core::FindProp;
+use webdav_raw::FindProp;
 
 use super::data::{content, dir, file};
 use crate::support::context::{Ctx, step};
@@ -49,7 +49,7 @@ pub async fn step_47c_verify_final_properties(ctx: &Ctx) {
             .auth()
             .propfind()
             .path(&path)
-            .depth(webdav_core::Depth::Zero)
+            .depth(webdav_raw::Depth::Zero)
             .props([
                 FindProp::Resourcetype,
                 FindProp::Getcontentlength,

@@ -1,6 +1,6 @@
 //! `DeleteDepth` 的取值边界。
 
-use webdav_core::DeleteDepth;
+use webdav_raw::DeleteDepth;
 
 /// 未设置时默认递归删除。
 #[test]

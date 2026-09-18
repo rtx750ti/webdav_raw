@@ -1,6 +1,6 @@
 //! Builder 的错误返回分支。
 
-use webdav_core::{OptionsBuilder, OptionsError};
+use webdav_raw::{OptionsBuilder, OptionsError};
 
 use crate::support::fixtures::{base_url, client};
 
@@ -27,7 +27,7 @@ fn invalid_header_value_returns_header_value_error() {
 /// 服务器不可达时 `send()` 返回 `Request` 错误。
 #[tokio::test]
 async fn send_returns_request_error_when_server_is_unreachable() {
-    let target = webdav_core::Url::parse("http://127.0.0.1:1/dav/").expect("地址必须合法");
+    let target = webdav_raw::Url::parse("http://127.0.0.1:1/dav/").expect("地址必须合法");
 
     let error = OptionsBuilder::new(client(), target)
         .send()
@@ -40,7 +40,7 @@ async fn send_returns_request_error_when_server_is_unreachable() {
 /// `send_capabilities()` 同样把发送期错误报成 `Request`。
 #[tokio::test]
 async fn send_capabilities_reports_send_error() {
-    let target = webdav_core::Url::parse("http://127.0.0.1:1/dav/").expect("地址必须合法");
+    let target = webdav_raw::Url::parse("http://127.0.0.1:1/dav/").expect("地址必须合法");
 
     let error = OptionsBuilder::new(client(), target)
         .send_capabilities()

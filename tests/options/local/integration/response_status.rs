@@ -1,6 +1,6 @@
 //! 状态码行为：服务端的判定原样透传，库不改成自己的错误。
 
-use webdav_core::WebdavAuth;
+use webdav_raw::WebdavAuth;
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 

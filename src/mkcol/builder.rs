@@ -47,7 +47,7 @@ pub enum MkcolError {
 /// - `415 Unsupported Media Type`：服务端不接受请求体。
 ///
 /// ```
-/// use webdav_core::{Client, MkcolBuilder, Url};
+/// use webdav_raw::{Client, MkcolBuilder, Url};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let request = MkcolBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?)
@@ -89,7 +89,7 @@ impl MkcolBuilder {
     /// 覆盖掉根地址中已有的路径前缀；传入完整 URL 时直接使用该地址。
     ///
     /// ```
-    /// use webdav_core::{Client, MkcolBuilder, Url};
+    /// use webdav_raw::{Client, MkcolBuilder, Url};
     ///
     /// let builder = MkcolBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
     /// let builder = builder.target_path("新建 目录/")?;
@@ -142,7 +142,7 @@ impl MkcolBuilder {
     /// 调用方设置的 `Content-Type` 会覆盖本库为请求体补的默认值。
     ///
     /// ```
-    /// use webdav_core::{Client, MkcolBuilder, Url};
+    /// use webdav_raw::{Client, MkcolBuilder, Url};
     ///
     /// let builder = MkcolBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
     /// let builder = builder.header("x-note", "建目录")?;

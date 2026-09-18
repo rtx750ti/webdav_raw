@@ -51,7 +51,7 @@
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use webdav_core::{
+use webdav_raw::{
     Depth, FileHandle, MultiStatus, PutBody, StatusCode, U8Bytes, U8BytesData, U8Metadata,
     WebdavAuth,
 };
@@ -62,7 +62,7 @@ use crate::common::network_config;
 ///
 /// 故意带上中文、空字节和高位字节：只测 ASCII 会漏掉编码与二进制透明性的问题。
 fn memory_payload() -> Vec<u8> {
-    let mut payload = "webdav-core PUT 验收：第一版内容".as_bytes().to_vec();
+    let mut payload = "webdav_raw PUT 验收：第一版内容".as_bytes().to_vec();
     payload.extend_from_slice(&[0x00, 0xFF, 0x0A, 0x80]);
 
     payload
@@ -70,7 +70,7 @@ fn memory_payload() -> Vec<u8> {
 
 /// 文件源的上传内容：更长，用于验证覆盖后长度确实跟着变。
 fn file_payload() -> Vec<u8> {
-    let mut payload = "webdav-core PUT 验收：第二版内容，覆盖前一版"
+    let mut payload = "webdav_raw PUT 验收：第二版内容，覆盖前一版"
         .as_bytes()
         .to_vec();
     payload.extend(std::iter::repeat_n(0xA5_u8, 4096));
@@ -92,7 +92,7 @@ fn unique_resource_name() -> String {
         .as_millis();
 
     format!(
-        "__webdav_core_put_acceptance_{}_{stamp}.txt",
+        "__webdav_raw_put_acceptance_{}_{stamp}.txt",
         std::process::id()
     )
 }

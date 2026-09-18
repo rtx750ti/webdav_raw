@@ -1,6 +1,6 @@
 //! 目标地址设置的边界：编码、根前缀覆盖与非法输入。
 
-use webdav_core::{OptionsBuilder, OptionsError};
+use webdav_raw::{OptionsBuilder, OptionsError};
 
 use crate::support::fixtures::{base_url, client};
 

@@ -1,6 +1,6 @@
 //! 源与目标两个地址的边界：解析、编码与非法输入。
 
-use webdav_core::{CopyBuilder, CopyError, Overwrite};
+use webdav_raw::{CopyBuilder, CopyError, Overwrite};
 
 use crate::support::fixtures::{base_url, client};
 

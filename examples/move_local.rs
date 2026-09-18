@@ -28,7 +28,7 @@
 //! 这里只调用 `build()`，不调用 `send()`：示例不发送任何请求，也不移动任何远端
 //! 资源，因此可以直接跑。
 
-use webdav_core::{Client, MoveBuilder, MoveDepth, Overwrite, Request, Url};
+use webdav_raw::{Client, MoveBuilder, MoveDepth, Overwrite, Request, Url};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 真实调用方用 auth.mv() 取 Builder，Authorization 会自动复用。

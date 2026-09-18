@@ -3,7 +3,7 @@
 use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
-use webdav_core::{DeleteDepth, WebdavAuth};
+use webdav_raw::{DeleteDepth, WebdavAuth};
 use wiremock::matchers::{header, method, path};
 use wiremock::{Mock, Request, Respond, ResponseTemplate};
 

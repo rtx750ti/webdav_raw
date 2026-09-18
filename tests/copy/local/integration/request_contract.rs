@@ -1,6 +1,6 @@
 //! COPY 请求契约：方法、源地址、目标地址与请求头。
 
-use webdav_core::{CopyDepth, Overwrite, WebdavAuth};
+use webdav_raw::{CopyDepth, Overwrite, WebdavAuth};
 use wiremock::matchers::{header, method, path};
 use wiremock::{Mock, ResponseTemplate};
 

@@ -91,7 +91,7 @@ pub enum MoveError {
 /// Client 与根地址；不设置源地址时源是根地址本身，但**目标必须显式设置**。
 ///
 /// ```
-/// use webdav_core::{Client, MoveBuilder, MoveDepth, Overwrite, Url};
+/// use webdav_raw::{Client, MoveBuilder, MoveDepth, Overwrite, Url};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let request = MoveBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?)
@@ -156,7 +156,7 @@ impl MoveBuilder {
     /// 名字里带 `move_` 是为了在调用点提醒读者：**这个资源会在请求成功后消失**。
     ///
     /// ```
-    /// use webdav_core::{Client, MoveBuilder, Url};
+    /// use webdav_raw::{Client, MoveBuilder, Url};
     ///
     /// let builder = MoveBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
     /// let builder = builder.move_from_path("old/name.txt")?;

@@ -92,7 +92,7 @@ pub enum CopyError {
 /// Client 与根地址；不设置源地址时源是根地址本身，但**目标必须显式设置**。
 ///
 /// ```
-/// use webdav_core::{Client, CopyDepth, CopyBuilder, Overwrite, Url};
+/// use webdav_raw::{Client, CopyDepth, CopyBuilder, Overwrite, Url};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let request = CopyBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?)
@@ -162,7 +162,7 @@ impl CopyBuilder {
     /// 这个值会经过 URL 编码后写进 `Destination` 请求头，见本模块文档。
     ///
     /// ```
-    /// use webdav_core::{Client, CopyBuilder, Url};
+    /// use webdav_raw::{Client, CopyBuilder, Url};
     ///
     /// let builder = CopyBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
     /// let builder = builder.target_path("备份/报告 2026.pdf")?;

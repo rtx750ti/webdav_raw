@@ -1,4 +1,4 @@
-use webdav_core::GetBuilder;
+use webdav_raw::GetBuilder;
 
 use crate::support::fixtures::{base_url, client};
 

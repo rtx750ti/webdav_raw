@@ -19,7 +19,7 @@
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use webdav_core::{DeleteDepth, Depth, FindProp, WebdavAuth};
+use webdav_raw::{DeleteDepth, Depth, FindProp, WebdavAuth};
 
 use crate::common::network_config;
 
@@ -31,7 +31,7 @@ fn temp_collection_name() -> String {
         .as_nanos();
     let pid = std::process::id();
 
-    format!("__webdav_core_selftest_mkcol_{nanos}_{pid}/")
+    format!("__webdav_raw_selftest_mkcol_{nanos}_{pid}/")
 }
 
 /// 验证真实服务能创建集合，且 PROPFIND 能看到它，最后清理。

@@ -1,5 +1,5 @@
-use webdav_core::WebdavAuth;
-use webdav_core::{Depth, PropFindError};
+use webdav_raw::WebdavAuth;
+use webdav_raw::{Depth, PropFindError};
 
 use crate::common::network_config;
 
@@ -67,7 +67,7 @@ async fn missing_path_returns_unexpected_status() {
 
     let result = auth
         .propfind()
-        .path("__webdav_core_missing_path__")
+        .path("__webdav_raw_missing_path__")
         .depth(Depth::Zero)
         .send_and_deserialize()
         .await;

@@ -6,7 +6,7 @@
 //! `Request` 变体是 `reqwest::Error` 的透传出口，只有底层客户端自身拒绝请求时
 //! 才会命中，本地无法构造出稳定输入，因此本文件不伪造该分支。
 
-use webdav_core::{Client, GetBuilder, GetError, HeaderName, ParseError, Url};
+use webdav_raw::{Client, GetBuilder, GetError, HeaderName, ParseError, Url};
 
 use crate::support::fixtures::{base_url, client};
 
@@ -45,7 +45,7 @@ fn header_name_error_display_mentions_header_name() {
 /// 头值非法时返回 `HeaderValue` 错误，文案带内层原因。
 #[test]
 fn header_value_error_display_mentions_header_value() {
-    let inner = webdav_core::HeaderValue::try_from("line\nbreak").expect_err("该取值应非法");
+    let inner = webdav_raw::HeaderValue::try_from("line\nbreak").expect_err("该取值应非法");
     let error = error_of(GetBuilder::new(client(), base_url()).header("x-note", "line\nbreak"));
 
     assert!(matches!(error, GetError::HeaderValue(_)), "应为 HeaderValue 错误");

@@ -3,7 +3,7 @@
 //! 这里验证的是「协议文本 → 模型」这一方向的语义保持：拆分结果与原始取值一一对应，
 //! 顺序不变；以及「模型 → 判断」这一层的语义——本库只给数据，不做判定。
 
-use webdav_core::{HeaderMap, HeaderValue, OptionsCapabilities};
+use webdav_raw::{HeaderMap, HeaderValue, OptionsCapabilities};
 
 /// 真实服务端常见的 `DAV` 取值能被完整还原，顺序保持不变。
 #[test]

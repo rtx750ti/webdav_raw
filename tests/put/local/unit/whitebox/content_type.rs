@@ -5,7 +5,7 @@
 //!
 //! 字段公开后本库不再在写入时校验，`validate` 供调用方自行检查。
 
-use webdav_core::U8Metadata;
+use webdav_raw::U8Metadata;
 
 /// 命中推断表：常见扩展名映射到对应内容类型。
 #[test]

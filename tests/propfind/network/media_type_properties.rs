@@ -3,7 +3,7 @@
 //! 这一组用例的存在理由：目录与文件在 WebDAV 里暴露的属性集合不同，而
 //! `getcontentlength` 只对文件有意义。用真实文件核对，避免用目录的结论去推断文件。
 
-use webdav_core::{Depth, WebdavAuth};
+use webdav_raw::{Depth, WebdavAuth};
 
 use crate::common::network_config;
 
@@ -62,8 +62,8 @@ async fn named_props_on_file_cannot_request_content_length() {
         .path(EXISTING_FILE)
         .depth(Depth::Zero)
         .props([
-            webdav_core::FindProp::Resourcetype,
-            webdav_core::FindProp::Getetag,
+            webdav_raw::FindProp::Resourcetype,
+            webdav_raw::FindProp::Getetag,
         ])
         .send_and_deserialize()
         .await
@@ -104,8 +104,8 @@ async fn named_content_length_request_returns_length() {
         .path(EXISTING_FILE)
         .depth(Depth::Zero)
         .props([
-            webdav_core::FindProp::Resourcetype,
-            webdav_core::FindProp::Getcontentlength,
+            webdav_raw::FindProp::Resourcetype,
+            webdav_raw::FindProp::Getcontentlength,
         ])
         .send_and_deserialize()
         .await

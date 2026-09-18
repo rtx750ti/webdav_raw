@@ -4,7 +4,7 @@
 //! 因此共用一个协议值类型。这里把这个跨领域引用固定下来：如果将来 COPY 改了
 //! `Overwrite` 的取值，MOVE 会一起受影响，这是有意的。
 
-use webdav_core::{MoveBuilder, Overwrite};
+use webdav_raw::{MoveBuilder, Overwrite};
 
 use crate::support::fixtures::{base_url, client};
 

@@ -1,6 +1,6 @@
 //! MOVE 请求契约：方法、源地址、目标地址与请求头。
 
-use webdav_core::{MoveDepth, Overwrite, WebdavAuth};
+use webdav_raw::{MoveDepth, Overwrite, WebdavAuth};
 use wiremock::matchers::{header, method, path};
 use wiremock::{Mock, ResponseTemplate};
 

@@ -1,7 +1,9 @@
 [package]
-name = "webdav-core"
+name = "webdav_raw"
 version = "0.1.0"
 edition = "2024"
+description = "Low-level asynchronous WebDAV request builders and protocol models."
+license = "Apache-2.0"
 
 [features]
 default = []

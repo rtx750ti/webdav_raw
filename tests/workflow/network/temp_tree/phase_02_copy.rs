@@ -4,7 +4,7 @@
 
 use std::collections::BTreeSet;
 
-use webdav_core::{CopyDepth, Overwrite, StatusCode};
+use webdav_raw::{CopyDepth, Overwrite, StatusCode};
 
 use super::data::{content, dir, file};
 use crate::support::context::{Ctx, step};

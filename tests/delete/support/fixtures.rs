@@ -1,6 +1,6 @@
 //! DELETE 领域专用夹具。
 
-use webdav_core::{Client, Url};
+use webdav_raw::{Client, Url};
 
 /// 固定的认证根地址，用于不发网络请求的 Builder 测试。
 pub fn base_url() -> Url {

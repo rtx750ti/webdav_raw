@@ -4,7 +4,7 @@
 //! 「body 的有无」到「请求语义」的转换：字节一致、`Content-Type` 只在需要时出现、
 //! 调用方的显式设置优先。
 
-use webdav_core::{MkcolBuilder, HeaderMap, HeaderValue};
+use webdav_raw::{MkcolBuilder, HeaderMap, HeaderValue};
 
 use crate::support::fixtures::{base_url, client};
 

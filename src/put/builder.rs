@@ -161,7 +161,7 @@ impl PutPayload {
 /// 需要发送该头时由调用方显式设置：
 ///
 /// ```
-/// use webdav_core::{PutBody, PutBuilder, U8BytesChunk, U8BytesData};
+/// use webdav_raw::{PutBody, PutBuilder, U8BytesChunk, U8BytesData};
 /// # fn example(builder: PutBuilder) -> Result<(), Box<dyn std::error::Error>> {
 /// let data = U8BytesData::new(vec![0; 4], None)?;
 /// let chunk = U8BytesChunk::new(data, Some(0), Some(3), Some(8), None)?;
@@ -204,8 +204,8 @@ impl PutBuilder {
     /// 覆盖掉根地址中已有的路径前缀。
     ///
     /// ```
-    /// use webdav_core::PutBuilder;
-    /// use webdav_core::{Client, Url};
+    /// use webdav_raw::PutBuilder;
+    /// use webdav_raw::{Client, Url};
     ///
     /// let builder = PutBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
     /// let builder = builder.relative_path("目录/报告 1.txt")?;
@@ -234,8 +234,8 @@ impl PutBuilder {
     /// 报错。本库不额外拦一道，避免和 reqwest 出现两套规则。
     ///
     /// ```
-    /// use webdav_core::PutBuilder;
-    /// use webdav_core::{Client, Url};
+    /// use webdav_raw::PutBuilder;
+    /// use webdav_raw::{Client, Url};
     ///
     /// let builder = PutBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
     /// let builder = builder.absolute_path("https://upload.example.com/file.bin")?;
@@ -263,8 +263,8 @@ impl PutBuilder {
     /// 同名请求头是**替换**语义：后设的覆盖先设的，不追加第二个同名头。
     ///
     /// ```
-    /// use webdav_core::PutBuilder;
-    /// use webdav_core::{Client, Url};
+    /// use webdav_raw::PutBuilder;
+    /// use webdav_raw::{Client, Url};
     ///
     /// let builder = PutBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?);
     /// let builder = builder
@@ -298,8 +298,8 @@ impl PutBuilder {
     /// 理由见 [`FileHandle`](crate::put::put_body::file_handle::FileHandle)。
     ///
     /// ```
-    /// use webdav_core::{PutBody, PutBuilder, U8Bytes, U8BytesData, U8Metadata};
-    /// use webdav_core::{Client, Url};
+    /// use webdav_raw::{PutBody, PutBuilder, U8Bytes, U8BytesData, U8Metadata};
+    /// use webdav_raw::{Client, Url};
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// let data = U8BytesData::new(b"hello".to_vec(), None)?;

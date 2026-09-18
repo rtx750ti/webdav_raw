@@ -14,7 +14,7 @@
 
 use std::env;
 
-use webdav_core::{
+use webdav_raw::{
     Client, FileHandle, PutBody, PutBuilder, Request, U8Bytes, U8BytesChunk, U8BytesData,
     U8Metadata, Url,
 };
@@ -52,7 +52,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ---------- 3. 异步文件句柄 ----------
     // 句柄必须处于文件起始位置，长度由本库在 build() 时读取；字节在发送阶段
     // 才流式读出，不会整体进入内存。
-    let path = env::temp_dir().join("webdav_core_put_example.bin");
+    let path = env::temp_dir().join("webdav_raw_put_example.bin");
     tokio::fs::write(&path, b"file-body").await?;
     let file = tokio::fs::File::open(&path).await?;
     let request = builder()

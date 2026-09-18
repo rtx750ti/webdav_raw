@@ -5,7 +5,7 @@
 //!
 //! 这组用例先用固定的响应文本独立复现，不依赖真实服务器，便于定位与回归。
 
-use webdav_core::MultiStatus;
+use webdav_raw::MultiStatus;
 
 /// 真实服务器对 `propname` 返回的响应形态（节选自实际响应）。
 const PROPNAME_BODY: &str = r#"<?xml version="1.0" encoding="utf-8"?>

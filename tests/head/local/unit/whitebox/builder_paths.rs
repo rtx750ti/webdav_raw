@@ -1,6 +1,6 @@
 //! Builder 的默认值、覆盖语义与请求装配。
 
-use webdav_core::{HeadBuilder, HeaderMap, HeaderValue};
+use webdav_raw::{HeadBuilder, HeaderMap, HeaderValue};
 
 use crate::support::fixtures::{base_url, client};
 

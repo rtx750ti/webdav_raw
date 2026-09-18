@@ -6,13 +6,13 @@
 
 use std::collections::BTreeSet;
 
-use webdav_core::{
+use webdav_raw::{
     DeleteDepth, Depth, FindProp, MultiStatus, PutBody, StatusCode, U8Bytes, U8BytesData,
     U8Metadata, WebdavAuth,
 };
 
 /// 本方案创建的命名空间前缀。清理只认这个前缀，绝不碰其他内容。
-pub const NAMESPACE_PREFIX: &str = "__webdav_core_workflow_";
+pub const NAMESPACE_PREFIX: &str = "__webdav_raw_workflow_";
 
 /// 列出根目录下的直接成员，返回**相对于认证根地址**的路径集合。
 ///
@@ -177,7 +177,7 @@ pub async fn put_bytes(auth: &WebdavAuth, path: &str, bytes: Vec<u8>) -> StatusC
 /// 发送完立即删除。
 pub async fn put_file(auth: &WebdavAuth, path: &str, bytes: Vec<u8>) -> StatusCode {
     let temp = std::env::temp_dir().join(format!(
-        "webdav_core_workflow_{}_{}.bin",
+        "webdav_raw_workflow_{}_{}.bin",
         std::process::id(),
         path.replace('/', "_")
     ));
@@ -193,7 +193,7 @@ pub async fn put_file(auth: &WebdavAuth, path: &str, bytes: Vec<u8>) -> StatusCo
         .put()
         .relative_path(path)
         .expect("相对路径应被接受")
-        .body(PutBody::from_file(webdav_core::FileHandle::new(file, None)))
+        .body(PutBody::from_file(webdav_raw::FileHandle::new(file, None)))
         .send()
         .await
         .expect("PUT 应发送成功")

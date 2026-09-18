@@ -1,6 +1,6 @@
 //! 状态码透传：本库不对任何状态码做解释。
 
-use webdav_core::WebdavAuth;
+use webdav_raw::WebdavAuth;
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 

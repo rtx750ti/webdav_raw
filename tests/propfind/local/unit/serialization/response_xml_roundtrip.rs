@@ -1,4 +1,4 @@
-use webdav_core::MultiStatus;
+use webdav_raw::MultiStatus;
 
 use crate::support::fixtures::{RAW_RESULT_1, RAW_RESULT_2, parse_fixture, response_semantics};
 

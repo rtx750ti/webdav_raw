@@ -4,7 +4,7 @@
 //! 三者写的是同一份存储。本文件按控制流逐条验证：先设后覆盖、批量合并、默认空表，
 //! 以及构建时把表挂到请求上。
 
-use webdav_core::{Client, GetBuilder, HeaderMap, HeaderValue, Url};
+use webdav_raw::{Client, GetBuilder, HeaderMap, HeaderValue, Url};
 
 use crate::support::fixtures::{base_url, client};
 
@@ -13,7 +13,7 @@ fn header_map_of(entries: &[(&'static str, &'static str)]) -> HeaderMap {
     let mut headers = HeaderMap::new();
     for (name, value) in entries {
         headers.insert(
-            webdav_core::HeaderName::try_from(*name).expect("测试头名应合法"),
+            webdav_raw::HeaderName::try_from(*name).expect("测试头名应合法"),
             HeaderValue::try_from(*value).expect("测试取值应合法"),
         );
     }

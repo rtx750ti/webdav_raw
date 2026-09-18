@@ -7,7 +7,7 @@
 //! 这组用例同时覆盖**序列化**方向：模型里为 `None` 的属性再次序列化时不能崩，
 //! 也不能凭空造出一个空字符串。
 
-use webdav_core::MultiStatus;
+use webdav_raw::MultiStatus;
 
 /// 三个带 `xsi:nil` 的属性：时间、MIME、长度各覆盖一个反序列化分支。
 const NIL_BODY: &str = r#"<?xml version="1.0" encoding="utf-8"?>
@@ -26,7 +26,7 @@ const NIL_BODY: &str = r#"<?xml version="1.0" encoding="utf-8"?>
 </D:multistatus>"#;
 
 /// 取第一份 propstat 里的属性集合。
-fn first_prop(multistatus: &MultiStatus) -> webdav_core::Prop {
+fn first_prop(multistatus: &MultiStatus) -> webdav_raw::Prop {
     multistatus
         .response
         .front()

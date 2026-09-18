@@ -69,7 +69,7 @@ impl U8BytesChunk {
     /// 不想校验时直接用结构体字面量赋值即可。
     ///
     /// ```
-    /// use webdav_core::{U8BytesChunk, U8BytesData};
+    /// use webdav_raw::{U8BytesChunk, U8BytesData};
     ///
     /// let data = U8BytesData::new(vec![1, 2], None).unwrap();
     /// let chunk = U8BytesChunk::new(data, Some(0), Some(1), Some(2), None).unwrap();
@@ -128,7 +128,7 @@ impl U8BytesChunk {
     /// 显式设置：
     ///
     /// ```
-    /// use webdav_core::{U8BytesChunk, U8BytesData};
+    /// use webdav_raw::{U8BytesChunk, U8BytesData};
     ///
     /// let data = U8BytesData::new(vec![0; 4], None).unwrap();
     /// let chunk = U8BytesChunk::new(data, Some(0), Some(3), Some(8), None).unwrap();

@@ -3,7 +3,7 @@
 //! 单元测试用的是手工构造的 `HeaderMap`；这里验证的是「服务端真的发了这两个头」
 //! 时，解析结果与原始响应同时可用。
 
-use webdav_core::WebdavAuth;
+use webdav_raw::WebdavAuth;
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
 

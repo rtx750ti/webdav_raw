@@ -3,7 +3,7 @@
 //! 单元测试验证的是构建出来的请求；这里验证服务端**实际收到**的取值，
 //! 包括中文与空格经过 HTTP 之后仍然是编码后的形态。
 
-use webdav_core::{Overwrite, WebdavAuth};
+use webdav_raw::{Overwrite, WebdavAuth};
 use wiremock::matchers::{header, method, path};
 use wiremock::{Mock, ResponseTemplate};
 
@@ -144,7 +144,7 @@ async fn destination_and_overwrite_are_sent_together() {
         .target_path("target.txt")
         .expect("合法相对路径应被接受")
         .overwrite(Overwrite::False)
-        .depth(webdav_core::CopyDepth::Zero)
+        .depth(webdav_raw::CopyDepth::Zero)
         .send()
         .await
         .expect("COPY 应发送成功");

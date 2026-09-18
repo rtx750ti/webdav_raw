@@ -3,7 +3,7 @@
 //! COPY 与 MOVE 允许 `0`、`1`、`infinity` 三种取值（RFC 4918 §9.8.3），
 //! 与 DELETE 只允许两种取值不同，因此这里有三个合法值要钉。
 
-use webdav_core::CopyDepth;
+use webdav_raw::CopyDepth;
 
 /// 未设置时默认递归复制。
 #[test]

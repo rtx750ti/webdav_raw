@@ -1,7 +1,7 @@
 //! Builder 的路径、请求头与默认值分支。
 
-use webdav_core::{Client, HeaderMap, HeaderValue, Request, Url};
-use webdav_core::{PutBody, PutBuilder, PutError, U8Bytes, U8BytesData};
+use webdav_raw::{Client, HeaderMap, HeaderValue, Request, Url};
+use webdav_raw::{PutBody, PutBuilder, PutError, U8Bytes, U8BytesData};
 
 use crate::support::fixtures::{bytes_body, bytes_body_with_content_type, metadata};
 

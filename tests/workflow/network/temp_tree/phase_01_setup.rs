@@ -4,7 +4,7 @@
 
 use std::collections::BTreeSet;
 
-use webdav_core::{FindProp, StatusCode};
+use webdav_raw::{FindProp, StatusCode};
 
 use super::data::{content, dir, file};
 use crate::support::context::{Ctx, step};
@@ -17,7 +17,7 @@ pub async fn step_01_query_root_self(ctx: &Ctx) {
     let multistatus = ctx
         .auth()
         .propfind()
-        .depth(webdav_core::Depth::Zero)
+        .depth(webdav_raw::Depth::Zero)
         .send_and_deserialize()
         .await
         .expect("查询根目录自身应成功");
@@ -72,7 +72,7 @@ pub async fn step_03_query_property_names(ctx: &Ctx) {
         .auth()
         .propfind()
         .prop_name()
-        .depth(webdav_core::Depth::Zero)
+        .depth(webdav_raw::Depth::Zero)
         .send()
         .await
         .expect("propname 请求应发送成功");
@@ -149,7 +149,7 @@ pub async fn step_04_query_selected_properties(ctx: &Ctx) {
     let multistatus = ctx
         .auth()
         .propfind()
-        .depth(webdav_core::Depth::One)
+        .depth(webdav_raw::Depth::One)
         .props([
             FindProp::Resourcetype,
             FindProp::Getcontenttype,
@@ -415,7 +415,7 @@ pub async fn step_13_verify_root_contains_two_dirs(ctx: &Ctx) {
         .auth()
         .propfind()
         .path(&ctx.path(dir::ROOT))
-        .depth(webdav_core::Depth::One)
+        .depth(webdav_raw::Depth::One)
         .send_and_deserialize()
         .await
         .expect("PROPFIND 01 应成功");
@@ -645,7 +645,7 @@ async fn etag_of(ctx: &Ctx, path: &str) -> Option<String> {
         .auth()
         .propfind()
         .path(path)
-        .depth(webdav_core::Depth::Zero)
+        .depth(webdav_raw::Depth::Zero)
         .props([FindProp::Getetag])
         .send_and_deserialize()
         .await

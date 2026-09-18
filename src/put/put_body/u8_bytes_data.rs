@@ -46,7 +46,7 @@ impl U8BytesData {
     /// 根据实际字节数据创建，长度由数据本身算出。
     ///
     /// ```
-    /// use webdav_core::U8BytesData;
+    /// use webdav_raw::U8BytesData;
     ///
     /// let data = U8BytesData::new(vec![1, 2, 3], Some("payload".to_owned())).unwrap();
     /// assert_eq!(data.length, 3);

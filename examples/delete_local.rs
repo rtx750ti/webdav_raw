@@ -17,7 +17,7 @@
 //!
 //! 返回的状态码本库原样透传，`204` / `404` / `423` / `207` 都要由调用方自行判断。
 
-use webdav_core::{Client, DeleteBuilder, DeleteDepth, Request, Url};
+use webdav_raw::{Client, DeleteBuilder, DeleteDepth, Request, Url};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 真实调用方用 auth.delete() 取 Builder，Authorization 会自动复用。

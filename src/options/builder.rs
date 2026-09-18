@@ -58,7 +58,7 @@ impl OptionsCapabilities {
     /// - `DAV` 头可能被多次发送（`HeaderMap` 会保留多个同名头），所有取值都会被解析
     ///
     /// ```
-    /// use webdav_core::{HeaderMap, HeaderValue, OptionsCapabilities};
+    /// use webdav_raw::{HeaderMap, HeaderValue, OptionsCapabilities};
     ///
     /// let mut headers = HeaderMap::new();
     /// headers.insert("dav", HeaderValue::from_static("1, 2, 3"));
@@ -104,7 +104,7 @@ fn parse_comma_separated(headers: &HeaderMap, name: &str) -> Vec<String> {
 ///   解析成 [`OptionsCapabilities`]，同时仍然把原始响应交回。
 ///
 /// ```
-/// use webdav_core::{Client, OptionsBuilder, Url};
+/// use webdav_raw::{Client, OptionsBuilder, Url};
 ///
 /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let request = OptionsBuilder::new(Client::new(), Url::parse("https://example.com/dav/")?)

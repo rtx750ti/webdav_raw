@@ -12,7 +12,7 @@
 //! 需要 `WEBDAV_URL`、`WEBDAV_ACCOUNT`、`WEBDAV_PASSWORD`。输出里不会出现账号、
 //! 密码或 Authorization。
 
-use webdav_core::WebdavAuth;
+use webdav_raw::WebdavAuth;
 
 use crate::common::network_config;
 
@@ -83,7 +83,7 @@ async fn head_missing_path_returns_non_success_status() {
 
     let response = auth
         .head()
-        .target_path("__webdav_core_missing_file__")
+        .target_path("__webdav_raw_missing_file__")
         .expect("相对路径应被接受")
         .send()
         .await
