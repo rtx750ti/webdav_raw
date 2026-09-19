@@ -3,8 +3,9 @@
 //! `GetError` 有五个变体：路径解析、头名解析、头值解析、按段区间、请求构建。
 //! 前四个由本库主动返回，本文件逐条固定它们的触发条件与 `Display` 文案。
 //!
-//! `Request` 变体是 `reqwest::Error` 的透传出口，只有底层客户端自身拒绝请求时
-//! 才会命中，本地无法构造出稳定输入，因此本文件不伪造该分支。
+//! `Request` 变体是 `reqwest::Error` 的透传出口，需要真实连接失败才可能命中；
+//! 它由 `tests/get/local/coverage/send_errors.rs` 用不可达回环端口覆盖，本文件
+//! 不重复该场景。
 
 use webdav_raw::{Client, GetBuilder, GetError, HeaderName, ParseError, Url};
 
