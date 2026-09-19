@@ -10,7 +10,7 @@
 
 ```toml
 [dependencies]
-webdav_raw = "0.1.0"
+webdav_raw = "0.1.1"
 ```
 
 ## 核心能力
@@ -115,7 +115,7 @@ let response = auth.get_client().execute(request).await?;
 
 ```toml
 [dependencies]
-webdav_raw = "0.1.0"
+webdav_raw = "0.1.1"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 serde_json = "1"
 ```
